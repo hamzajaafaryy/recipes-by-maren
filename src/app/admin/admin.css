@@ -48,3 +48,16 @@
   .admin-login > .admin-brand { top: 22px; left: 20px; }
   .admin-login-card { padding: 29px 23px; }
 }
+
+.recipe-library { margin-top: 22px; }
+.admin-empty { color: #89877e; font-size: 12px; padding: 12px 0; }
+.recipe-table-wrap { overflow-x: auto; }
+.recipe-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 11px; }
+.recipe-table th { color: #89877e; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 12px 10px; border-bottom: 1px solid #e9e3d8; }
+.recipe-table td { padding: 14px 10px; border-bottom: 1px solid #f0ece4; color: #66675f; white-space: nowrap; }
+.recipe-table td:first-child { white-space: normal; min-width: 190px; }
+.recipe-table td strong, .recipe-table td small { display: block; }
+.recipe-table td strong { color: #30352d; font: 16px Georgia, serif; font-weight: 400; }
+.recipe-table td small { color: #99958a; margin-top: 5px; font-size: 10px; }
+.table-status { display: inline-block; background: #f4eadf; color: #986a48; padding: 5px 8px; font-size: 9px; letter-spacing: .08em; }
+.table-status.published { background: #e7ebdf; color: #596b4d; }
