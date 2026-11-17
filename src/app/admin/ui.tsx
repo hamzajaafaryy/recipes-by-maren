@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 type RecipeRow = { id: string; title: string; slug: string; status: string; updatedAt: string };
@@ -12,7 +12,23 @@ export default function AdminDashboard() {
   const [status, setStatus] = useState("DRAFT");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const [recipes, setRecipes] = useState<RecipeRow[]>([]);
+  const [loadError, setLoadError] = useState("");
   const router = useRouter();
+
+  async function loadRecipes() {
+    try {
+      const response = await fetch("/api/admin/recipes", { cache: "no-store" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Could not load recipes.");
+      setRecipes(data.recipes);
+      setLoadError("");
+    } catch (error) {
+      setLoadError(error instanceof Error ? error.message : "Could not load recipes.");
+    }
+  }
+
+  useEffect(() => { void loadRecipes(); }, []);
 
   function updateTitle(value: string) {
     setTitle(value);
@@ -32,7 +48,8 @@ export default function AdminDashboard() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Could not create recipe.");
       setTitle(""); setSlug(""); setExcerpt(""); setStatus("DRAFT");
-      setMessage("Recipe draft created. Add ingredients and instructions in the next editing step.");
+      setMessage("Recipe entry created successfully.");
+      await loadRecipes();
       router.refresh();
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Something went wrong.");
@@ -54,15 +71,16 @@ export default function AdminDashboard() {
         <span className="admin-side-label">WORKSPACE</span>
         <a className="admin-side-link active" href="/admin">Overview</a>
         <a className="admin-side-link" href="#new-recipe">New recipe</a>
+        <a className="admin-side-link" href="#recipe-library">Recipe library</a>
         <a className="admin-side-link" href="/">View website ↗</a>
         <button className="admin-logout" onClick={logout}>Sign out</button>
       </aside>
       <section className="admin-main">
         <div className="admin-topline"><span className="eyebrow">Content studio</span><span className="admin-status">Private admin</span></div>
         <h1>Good morning.</h1>
-        <p className="admin-intro">Your kitchen, your content. Start with a new recipe draft.</p>
+        <p className="admin-intro">Your kitchen, your content. Manage your recipe library from here.</p>
         <div className="admin-stats">
-          <div><span>CONTENT</span><strong>Recipe studio</strong><small>Create and organize your recipe library</small></div>
+          <div><span>RECIPES</span><strong>{recipes.length}</strong><small>Entries in your recipe library</small></div>
           <div><span>WORKFLOW</span><strong>Draft first</strong><small>Review every recipe before publishing</small></div>
           <div><span>MEDIA</span><strong>Cloudinary ready</strong><small>Connect credentials to enable uploads</small></div>
         </div>
@@ -81,7 +99,13 @@ export default function AdminDashboard() {
             {message && <p className="admin-message" role="status">{message}</p>}
           </form>
         </section>
-        <p className="admin-footnote">Publishing should happen only after the recipe, ingredient quantities, method, images, and SEO details have been reviewed.</p>
+        <section className="admin-panel recipe-library" id="recipe-library">
+          <div className="admin-panel-heading"><div><span className="eyebrow">Your content</span><h2>Recipe library</h2></div><span className="draft-pill">{recipes.length} TOTAL</span></div>
+          {loadError && <p className="form-error">{loadError}</p>}
+          {!loadError && recipes.length === 0 && <p className="admin-empty">No recipes yet. Create your first entry above.</p>}
+          {recipes.length > 0 && <div className="recipe-table-wrap"><table className="recipe-table"><thead><tr><th>Recipe</th><th>Status</th><th>Updated</th></tr></thead><tbody>{recipes.map((recipe) => <tr key={recipe.id}><td><strong>{recipe.title}</strong><small>/{recipe.slug}</small></td><td><span className={recipe.status === "PUBLISHED" ? "table-status published" : "table-status"}>{recipe.status}</span></td><td>{new Date(recipe.updatedAt).toLocaleDateString("en-US")}</td></tr>)}</tbody></table></div>}
+        </section>
+        <p className="admin-footnote">Before publishing, review ingredient quantities, method, images, nutrition details, and SEO information. Do not publish placeholder or untested recipe content.</p>
       </section>
     </main>
   );
