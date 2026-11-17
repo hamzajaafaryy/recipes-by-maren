@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     const title = body.title?.trim();
     const slug = body.slug?.trim().toLowerCase();
     const excerpt = body.excerpt?.trim();
-    const status = body.status === "PUBLISHED" ? "PUBLISHED" : "DRAFT";
+    const status = "DRAFT";
 
     if (!title || title.length > 140) return NextResponse.json({ error: "Title is required (maximum 140 characters)." }, { status: 400 });
     if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug.length > 160) return NextResponse.json({ error: "Use a valid lowercase URL slug." }, { status: 400 });
