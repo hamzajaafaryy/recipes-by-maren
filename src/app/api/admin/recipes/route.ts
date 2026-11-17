@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
         content: "",
         status,
         authorId: author.id,
-        publishedAt: status === "PUBLISHED" ? new Date() : null
+        publishedAt: null
       },
       select: { id: true, title: true, slug: true, status: true }
     });
