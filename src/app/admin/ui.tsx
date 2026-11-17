@@ -94,7 +94,7 @@ export default function AdminDashboard() {
             <label htmlFor="recipe-excerpt">Short description</label>
             <textarea id="recipe-excerpt" value={excerpt} onChange={(e) => setExcerpt(e.target.value)} rows={3} maxLength={320} placeholder="A helpful, specific description of this recipe…" required />
             <label htmlFor="recipe-status">Publishing status</label>
-            <select id="recipe-status" value={status} onChange={(e) => setStatus(e.target.value)}><option value="DRAFT">Save as draft</option><option value="PUBLISHED">Publish</option></select>
+            <select id="recipe-status" value="DRAFT" disabled><option value="DRAFT">Save as draft</option></select>
             <button className="button-primary" type="submit" disabled={busy}>{busy ? "Saving…" : "Create recipe"}</button>
             {message && <p className="admin-message" role="status">{message}</p>}
           </form>
