@@ -24,3 +24,38 @@ See `.env.example`. The public website can run locally without Supabase or Cloud
 
 ## Content principles
 Publish original, carefully reviewed recipes. Do not invent testing claims, author credentials, ratings, or nutrition facts.
+
+## Admin setup
+
+The private admin area is available at `/admin`. Configure these values in your hosting environment before using it:
+
+- `ADMIN_PASSWORD_HASH`: scrypt password hash in `salt:hexhash` format.
+- `AUTH_SECRET`: a random secret of at least 32 characters.
+- `DATABASE_URL` and `DIRECT_URL`: Supabase PostgreSQL connection strings.
+
+Generate an admin password hash locally with Node.js:
+
+```bash
+node -e "const c=require('crypto');const s=c.randomBytes(16).toString('hex');console.log(s+':'+c.scryptSync('CHANGE_THIS_PASSWORD',s,64).toString('hex'))"
+```
+
+Replace `CHANGE_THIS_PASSWORD` with a strong unique password. Generate `AUTH_SECRET` with:
+
+```bash
+openssl rand -base64 48
+```
+
+Never commit real secrets to GitHub. New recipe entries are saved as drafts; the public recipe publishing workflow is intentionally not enabled until full recipe editing and review are implemented.
+
+## Database setup
+
+After configuring Supabase connection strings:
+
+```bash
+npm install
+npx prisma generate
+npx prisma migrate dev --name init
+npm run db:seed
+```
+
+Run migrations against the intended database only after reviewing the generated SQL. Use the Supabase pooled connection for runtime where appropriate and the direct connection for migrations.
