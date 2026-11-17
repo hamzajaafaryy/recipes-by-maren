@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Author {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  bio         String?  @db.Text
+  imagePublicId String?
+  recipes     Recipe[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?  @db.Text
+  recipes     RecipeCategory[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Recipe {
+  id              String   @id @default(cuid())
+  title           String
+  slug            String   @unique
+  excerpt         String   @db.VarChar(320)
+  content         String   @db.Text
+  status          String   @default("DRAFT")
+  prepMinutes     Int?
+  cookMinutes     Int?
+  totalMinutes    Int?
+  servings        Int      @default(4)
+  difficulty      String?
+  heroPublicId    String?
+  seoTitle        String?
+  seoDescription  String?  @db.VarChar(320)
+  canonicalUrl    String?
+  authorId        String
+  author          Author   @relation(fields: [authorId], references: [id])
+  ingredients     Ingredient[]
+  instructions    Instruction[]
+  categories      RecipeCategory[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  publishedAt     DateTime?
+
+  @@index([status, publishedAt])
+  @@index([authorId])
+}
+
+model Ingredient {
+  id        String @id @default(cuid())
+  recipeId  String
+  recipe    Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  section   String?
+  quantity  String?
+  item      String
+  sortOrder Int    @default(0)
+
+  @@index([recipeId, sortOrder])
+}
+
+model Instruction {
+  id        String @id @default(cuid())
+  recipeId  String
+  recipe    Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  title     String?
+  body      String @db.Text
+  imagePublicId String?
+  sortOrder Int    @default(0)
+
+  @@index([recipeId, sortOrder])
+}
+
+model RecipeCategory {
+  recipeId  String
+  categoryId String
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  category  Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([recipeId, categoryId])
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  status    String   @default("PENDING")
+  source    String?
+  createdAt DateTime @default(now())
+  confirmedAt DateTime?
+}
