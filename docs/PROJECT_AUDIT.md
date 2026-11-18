@@ -11,8 +11,8 @@ The current repository is a visual starter and technical foundation, not a launc
 ## Findings
 
 ### P0 — Must fix before treating the site as a usable product
-- [ ] Navigation is not shared across routes. The homepage contains its own header; internal pages have no site-wide navigation.
-- [ ] The mobile menu button is displayed at widths below 800px but has no interaction or menu panel.
+- [x] Shared site navigation and footer now mount from the root layout across public routes; admin screens hide the public shell.
+- [x] Responsive mobile navigation now opens/closes with an accessible toggle and closes after selecting a link.
 - [ ] The homepage recipe cards are static placeholder data. They do not link to recipe detail pages.
 - [ ] Category cards point to the latest section instead of category pages.
 - [ ] Search is a placeholder anchor, not a search feature.
@@ -43,6 +43,14 @@ The current repository is a visual starter and technical foundation, not a launc
 - [ ] Add performance, Core Web Vitals, broken-link, image-alt, keyboard, and screen-reader testing.
 - [ ] Add monitoring, backups, email deliverability checks, and an operational publishing checklist.
 
+## Stage 2 work already committed
+- Added shared responsive header and footer components and mounted them from the root layout.
+- Added an accessible mobile menu toggle with expanded state and a real navigation panel.
+- Removed duplicated homepage-only header/footer markup.
+- Corrected the ESLint flat-config preset shape that caused the deployment warning.
+- Made admin authentication fail closed instead of throwing when AUTH_SECRET is missing and a stale session cookie is present.
+- Added this audit and roadmap document.
+
 ## What is verified
 - Vercel deployment `dpl_4WfjA4uwvKQvwuMywV4YTnQVzAyy` reached READY.
 - Next.js production build completed and generated the currently implemented routes.
@@ -50,6 +58,7 @@ The current repository is a visual starter and technical foundation, not a launc
 - Repository source was inspected for the homepage, global layout/styles, admin pages/API, Prisma schema/seed, metadata, sitemap/robots, and legal pages.
 
 ## What is not verified
+- The latest deployment for commit `5410d095af8a43a4d3b86bab851aebebf2d4b64c` is still queued; the new shared navigation has not yet been verified in a deployed browser.
 - Live browser rendering at desktop/mobile sizes.
 - Real database connectivity, migrations, or seed data.
 - Admin login against production environment variables.
