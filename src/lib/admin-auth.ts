@@ -54,7 +54,12 @@ export async function isAdminAuthenticated() {
   if (!value) return false;
   const [payload, supplied] = value.split(".");
   if (!payload || !supplied) return false;
-  const expected = signature(payload);
+  let expected: string;
+  try {
+    expected = signature(payload);
+  } catch {
+    return false;
+  }
   const a = Buffer.from(supplied);
   const b = Buffer.from(expected);
   if (a.length !== b.length || !timingSafeEqual(a, b)) return false;
