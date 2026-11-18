@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+export const dynamic = "force-dynamic";
+
 import { notFound } from "next/navigation";
 import RecipeJsonLd from "@/components/recipe-json-ld";
 import { prisma } from "@/lib/prisma";
