@@ -44,13 +44,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       type: "website",
       url: canonical,
-      ...(image ? { images: [{ url: image, width: 1200, height: 630, alt: `${category.name} recipes` }] } : {})
+      images: [{
+        url: image || "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&h=630&q=85",
+        width: 1200,
+        height: 630,
+        alt: `${category.name} recipes`
+      }]
     },
     twitter: {
-      card: image ? "summary_large_image" : "summary",
+      card: "summary_large_image",
       title: `${category.name} Recipes | Recipes by Maren`,
       description,
-      ...(image ? { images: [image] } : {})
+      images: [image || "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&h=630&q=85"]
     }
   };
 }
@@ -71,6 +76,9 @@ export default async function CategoryPage({ params }: Props) {
     name: `${category.name} Recipes`,
     description: category.description || `Browse ${category.name.toLowerCase()} recipes from Recipes by Maren.`,
     url: categoryUrl,
+    ...(recipes.find((recipe) => recipe.heroPublicId)?.heroPublicId ? {
+      image: getOpenGraphImageUrl(recipes.find((recipe) => recipe.heroPublicId)!.heroPublicId) || undefined
+    } : {}),
     mainEntity: {
       "@type": "ItemList",
       itemListElement: recipes.map((recipe, index) => ({
