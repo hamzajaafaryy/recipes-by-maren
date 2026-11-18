@@ -216,3 +216,56 @@ body:has(.admin-login) .announcement { display: none; }
   .site-footer { padding: 40px 20px 22px; }
   .site-footer-links { gap: 15px; }
 }
+
+/* UI, accessibility and responsive polish */
+.skip-link {
+  position: fixed;
+  z-index: 100;
+  top: 12px;
+  left: 12px;
+  transform: translateY(-160%);
+  padding: 12px 16px;
+  border-radius: 3px;
+  background: var(--green-dark);
+  color: #fff;
+  font-size: 13px;
+}
+.skip-link:focus { transform: translateY(0); }
+:focus-visible {
+  outline: 3px solid #c56f42;
+  outline-offset: 4px;
+}
+#main-content:focus { outline: none; }
+.category-card { display: block; }
+.category-photo, .recipe-photo, .hero-image, .about-photo {
+  background-repeat: no-repeat;
+}
+.category-photo, .recipe-photo {
+  transition: transform .35s ease, filter .35s ease;
+}
+.category-card:hover .category-photo { filter: saturate(1.06); }
+.recipe-card { min-width: 0; overflow: hidden; }
+.recipe-photo { aspect-ratio: 16 / 10; height: auto; }
+.category-photo { aspect-ratio: 4 / 3; height: auto; }
+.newsletter-link { display: inline-flex; margin-top: 12px; }
+.hero-image { min-height: 0; aspect-ratio: 1.18 / 1; }
+.about-photo { min-height: 0; aspect-ratio: 1.28 / 1; }
+@media (max-width: 800px) {
+  .hero-image { aspect-ratio: 1.15 / 1; min-height: 0; }
+  .recipe-photo { aspect-ratio: 16 / 10; }
+  .category-photo { aspect-ratio: 1.12 / 1; }
+}
+@media (max-width: 480px) {
+  .hero-image { aspect-ratio: 1.08 / 1; min-height: 0; }
+  .category-photo { aspect-ratio: 1.15 / 1; }
+  .about-photo { aspect-ratio: 1.2 / 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
