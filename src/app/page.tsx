@@ -12,7 +12,19 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Recipes by Maren — Real Food for Real Life",
     description: "Approachable dinner ideas, cozy bakes, and simple recipes for everyday home cooking.",
-    type: "website"
+    type: "website",
+    images: [{
+      url: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&h=630&q=85",
+      width: 1200,
+      height: 630,
+      alt: "A colorful table of fresh, homemade food"
+    }]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Recipes by Maren — Real Food for Real Life",
+    description: "Approachable dinner ideas, cozy bakes, and simple recipes for everyday home cooking.",
+    images: ["https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&h=630&q=85"]
   }
 };
 
