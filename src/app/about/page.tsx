@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "About",
@@ -16,7 +17,7 @@ export default function AboutPage() {
       <p style={{ color: "var(--muted)", lineHeight: 1.9 }}>
         Maren is the editorial pen name behind this publication. Recipes and editorial content will be reviewed before publication, and we will be clear about sources, partnerships, and how content is created.
       </p>
-      <a className="text-link" href="/">Back to the homepage</a>
+      <Link className="text-link" href="/">Back to the homepage</Link>
     </main>
   );
 }
