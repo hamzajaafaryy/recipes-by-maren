@@ -28,7 +28,6 @@ async function getHomeContent() {
   try {
     const [categories, recipes] = await Promise.all([
       prisma.category.findMany({
-        where: { recipes: { some: { recipe: { status: "PUBLISHED", publishedAt: { not: null } } } } },
         include: {
           recipes: {
             where: { recipe: { status: "PUBLISHED", publishedAt: { not: null } } },
