@@ -57,23 +57,6 @@ export default function HomePage() {
 
   return (
     <main className="site-shell">
-      <div className="announcement">A little inspiration for your everyday table</div>
-      <header className="header">
-        <nav className="nav-links" aria-label="Main navigation">
-          <a href="#latest">Latest recipes</a>
-          <a href="#categories">Browse</a>
-          <a href="#about">About</a>
-        </nav>
-        <a className="brand" href="/" aria-label="Recipes by Maren home">
-          <span className="brand-name">Recipes by Maren</span>
-          <span className="brand-by">Real food, made with care</span>
-        </a>
-        <div className="header-actions">
-          <a className="search-link" href="#latest">Search recipes</a>
-          <a className="header-cta" href="#newsletter">Get the newsletter</a>
-        </div>
-      </header>
-
       <section className="hero">
         <div className="hero-copy">
           <span className="eyebrow">Welcome to my kitchen</span>
@@ -162,23 +145,6 @@ export default function HomePage() {
           <button type="submit">Count me in</button>
         </form>
       </section>
-
-      <footer className="footer">
-        <div className="footer-inner">
-          <div>
-            <div className="footer-brand">Recipes by Maren</div>
-            <div className="footer-tagline">Real food. Simple recipes. Made with care.</div>
-          </div>
-          <nav className="footer-links" aria-label="Footer navigation">
-            <a href="#about">About</a>
-            <a href="#latest">Recipes</a>
-            <a href="/contact">Contact</a>
-            <a href="/privacy">Privacy</a>
-            <a href="/disclosure">Affiliate disclosure</a>
-          </nav>
-        </div>
-        <div className="footer-bottom">© {new Date().getFullYear()} Recipes by Maren. All rights reserved.</div>
-      </footer>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
     </main>
