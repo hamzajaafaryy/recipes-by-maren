@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Affiliate Disclosure",
@@ -16,7 +17,7 @@ export default function DisclosurePage() {
       <p style={{ color: "var(--muted)", lineHeight: 1.9 }}>
         Recommendations should be selected for their usefulness and relevance. Affiliate relationships do not guarantee a positive review or endorsement.
       </p>
-      <a className="text-link" href="/">Back to the homepage</a>
+      <Link className="text-link" href="/">Back to the homepage</Link>
     </main>
   );
 }
