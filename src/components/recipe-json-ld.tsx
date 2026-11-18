@@ -34,6 +34,7 @@ export default function RecipeJsonLd(props: RecipeJsonLdProps) {
       url: siteUrl
     },
     ...(props.recipeCategories?.length ? { recipeCategory: props.recipeCategories } : {}),
+    keywords: [props.title, ...(props.recipeCategories || [])].join(", "),
     ...(props.prepMinutes ? { prepTime: `PT${props.prepMinutes}M` } : {}),
     ...(props.cookMinutes ? { cookTime: `PT${props.cookMinutes}M` } : {}),
     ...(props.totalMinutes ? { totalTime: `PT${props.totalMinutes}M` } : {}),
