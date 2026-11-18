@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-export const dynamic = "force-dynamic";
+import Link from "next/link";
+export const revalidate = 3600;
 
 import { notFound } from "next/navigation";
 import RecipeJsonLd from "@/components/recipe-json-ld";
+import PinterestSaveButton from "@/components/pinterest-save-button";
 import { prisma } from "@/lib/prisma";
-import { getRecipeImageUrl } from "@/lib/recipe-media";
+import { getOpenGraphImageUrl, getPinterestImageUrl, getRecipeImageUrl } from "@/lib/recipe-media";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -31,18 +33,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const title = recipe.seoTitle?.trim() || recipe.title;
   const description = recipe.seoDescription?.trim() || recipe.excerpt;
-  const image = getRecipeImageUrl(recipe.heroPublicId, 1200);
+  const image = getOpenGraphImageUrl(recipe.heroPublicId);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://recipesbymaren.com";
+  const canonical = recipe.canonicalUrl || `${siteUrl}/recipes/${recipe.slug}`;
 
   return {
     title,
     description,
-    alternates: { canonical: recipe.canonicalUrl || `/recipes/${recipe.slug}` },
+    alternates: { canonical },
     openGraph: {
       type: "article",
       title,
       description,
-      url: `/recipes/${recipe.slug}`,
-      ...(image ? { images: [{ url: image, alt: recipe.title }] } : {})
+      url: canonical,
+      authors: [recipe.author.name],
+      publishedTime: recipe.publishedAt?.toISOString(),
+      modifiedTime: recipe.updatedAt.toISOString(),
+      ...(image ? { images: [{ url: image, width: 1200, height: 630, alt: `${recipe.title} recipe` }] } : {})
     },
     twitter: {
       card: image ? "summary_large_image" : "summary",
@@ -59,22 +66,32 @@ export default async function RecipePage({ params }: Props) {
   if (!recipe) notFound();
 
   const image = getRecipeImageUrl(recipe.heroPublicId, 1600);
-  const ingredientLines = recipe.ingredients.map((item) =>
-    [item.quantity, item.item].filter(Boolean).join(" ")
-  );
+  const pinterestImage = getPinterestImageUrl(recipe.heroPublicId);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://recipesbymaren.com";
+  const pageUrl = `${siteUrl}/recipes/${recipe.slug}`;
+  const ingredientLines = recipe.ingredients.map((item) => [item.quantity, item.item].filter(Boolean).join(" "));
   const instructionLines = recipe.instructions.map((step) => step.body);
-  const canUseRecipeSchema =
-    Boolean(recipe.publishedAt && image && ingredientLines.length > 0 && instructionLines.length > 0);
+  const categoryNames = recipe.categories.map(({ category }) => category.name);
+  const canUseRecipeSchema = Boolean(recipe.publishedAt && image && ingredientLines.length > 0 && instructionLines.length > 0);
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "All Recipes", item: `${siteUrl}/recipes` },
+      { "@type": "ListItem", position: 3, name: recipe.title, item: pageUrl }
+    ]
+  };
 
   return (
     <main className="content-page recipe-page" id="main-content" tabIndex={-1}>
       <nav className="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a><span aria-hidden="true">/</span><a href="/#latest">Recipes</a><span aria-hidden="true">/</span><span>{recipe.title}</span>
+        <Link href="/">Home</Link><span aria-hidden="true">/</span><Link href="/recipes">Recipes</Link><span aria-hidden="true">/</span><span>{recipe.title}</span>
       </nav>
       <header className="recipe-header">
         <div className="recipe-kickers">
           {recipe.categories.map(({ category }) => (
-            <a className="recipe-category-link" href={`/category/${category.slug}`} key={category.slug}>{category.name}</a>
+            <Link className="recipe-category-link" href={`/category/${category.slug}`} key={category.slug}>{category.name}</Link>
           ))}
         </div>
         <h1>{recipe.title}</h1>
@@ -86,7 +103,19 @@ export default async function RecipePage({ params }: Props) {
       </header>
 
       {image ? (
-        <div className="recipe-hero-image" role="img" aria-label={`Finished ${recipe.title}`} style={{ backgroundImage: `url("${image}")` }} />
+        <figure className="recipe-hero-figure">
+          {/* unoptimized keeps Cloudinary's f_auto/q_auto transformations and avoids a second image proxy */}
+          <img
+            className="recipe-hero-image"
+            src={image}
+            alt={`${recipe.title} — finished dish`}
+            width={1600}
+            height={900}
+            fetchPriority="high"
+            decoding="async"
+          />
+          {pinterestImage ? <PinterestSaveButton pageUrl={pageUrl} imageUrl={pinterestImage} description={`${recipe.title} — easy recipe from Recipes by Maren`} /> : null}
+        </figure>
       ) : null}
 
       <div className="recipe-layout">
@@ -96,9 +125,7 @@ export default async function RecipePage({ params }: Props) {
             <h2 id="ingredients-heading">Ingredients</h2>
             {recipe.ingredients.length ? (
               <ul className="ingredient-list">
-                {recipe.ingredients.map((item) => (
-                  <li key={item.id}>{item.quantity ? <strong>{item.quantity} </strong> : null}{item.item}</li>
-                ))}
+                {recipe.ingredients.map((item) => <li key={item.id}>{item.quantity ? <strong>{item.quantity} </strong> : null}{item.item}</li>)}
               </ul>
             ) : <p>Ingredients for this recipe are being added.</p>}
           </section>
@@ -131,6 +158,8 @@ export default async function RecipePage({ params }: Props) {
           datePublished={recipe.publishedAt!.toISOString()}
           dateModified={recipe.updatedAt.toISOString()}
           authorName={recipe.author.name}
+          recipeCategories={categoryNames}
+          recipeUrl={pageUrl}
           prepMinutes={recipe.prepMinutes ?? undefined}
           cookMinutes={recipe.cookMinutes ?? undefined}
           totalMinutes={recipe.totalMinutes ?? undefined}
@@ -139,6 +168,7 @@ export default async function RecipePage({ params }: Props) {
           instructions={instructionLines}
         />
       ) : null}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, "\\u003c") }} />
     </main>
   );
 }
