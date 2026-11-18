@@ -13,12 +13,12 @@ The current repository is a visual starter and technical foundation, not a launc
 ### P0 — Must fix before treating the site as a usable product
 - [x] Shared site navigation and footer now mount from the root layout across public routes; admin screens hide the public shell.
 - [x] Responsive mobile navigation now opens/closes with an accessible toggle and closes after selecting a link.
-- [ ] The homepage recipe cards are static placeholder data. They do not link to recipe detail pages.
-- [ ] Category cards point to the latest section instead of category pages.
-- [ ] Search is a placeholder anchor, not a search feature.
+- [x] Homepage recipe cards now load only published database recipes and link to their detail pages; empty states are shown when no content is published.
+- [x] Category cards link to category landing pages.
+- [x] Search now queries published recipe titles, descriptions, and ingredients through a server-rendered search page.
 - [ ] Newsletter form submits to `#` with GET; no subscription is stored or sent.
 - [ ] Admin only creates and lists minimal draft records. No recipe edit/delete, full recipe editor, category assignment, ingredients, instructions, image upload, or publishing workflow.
-- [ ] No public recipe detail or category routes exist.
+- [x] Public recipe detail and category routes now exist, with per-page metadata and published-content filtering.
 - [ ] No database migration files are committed. Database connection, migrations, and seed execution remain environment-dependent and unverified.
 - [ ] Cloudinary helper exists, but there is no upload workflow and no recipe page consuming it.
 
@@ -46,10 +46,21 @@ The current repository is a visual starter and technical foundation, not a launc
 ## Stage 2 work already committed
 - Added shared responsive header and footer components and mounted them from the root layout.
 - Added an accessible mobile menu toggle with expanded state and a real navigation panel.
+- Added keyboard skip navigation, visible focus states, reduced-motion support, and page-level homepage metadata.
+- Added database-backed published recipe cards, category landing pages, recipe detail pages, server-rendered search, canonical metadata, and a dynamic sitemap.
+- Added safe Cloudinary image URL generation from configured public IDs; no image URL is emitted when the cloud name or image ID is missing.
 - Removed duplicated homepage-only header/footer markup.
 - Corrected the ESLint flat-config preset shape that caused the deployment warning.
 - Made admin authentication fail closed instead of throwing when AUTH_SECRET is missing and a stale session cookie is present.
 - Added this audit and roadmap document.
+
+## UI/UX and SEO implementation notes
+
+- Homepage content is now database-driven; unpublished drafts are excluded from public discovery.
+- Search is noindex by design to avoid indexing thin query-result pages.
+- Recipe structured data is intentionally conditional; no ratings, nutrition, or unsupported fields are fabricated.
+- Category and recipe routes depend on a configured database and published records. Until migrations and seed/data setup are completed, the site will show empty states rather than sample recipes.
+- Cloudinary image URLs require `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME` and a valid `heroPublicId`.
 
 ## What is verified
 - Vercel deployment `dpl_4WfjA4uwvKQvwuMywV4YTnQVzAyy` reached READY.
