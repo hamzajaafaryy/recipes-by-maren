@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const title = recipe.seoTitle?.trim() || recipe.title;
   const description = recipe.seoDescription?.trim() || recipe.excerpt;
-  const image = getOpenGraphImageUrl(recipe.heroPublicId);
+  const image = getOpenGraphImageUrl(recipe.heroPublicId) || "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&h=630&q=85";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://recipesbymaren.com";
   const canonical = recipe.canonicalUrl || `${siteUrl}/recipes/${recipe.slug}`;
 
