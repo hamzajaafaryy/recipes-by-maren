@@ -14,7 +14,6 @@ export const metadata: Metadata = {
   },
   description: "Discover approachable weeknight dinners, cozy bakes, and simple recipes made for real life.",
   applicationName: "Recipes by Maren",
-  alternates: { canonical: "/" },
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
     shortcut: "/icon.svg"
