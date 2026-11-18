@@ -70,6 +70,15 @@ export default async function CategoryPage({ params }: Props) {
     .sort((a, b) => (b.publishedAt?.getTime() ?? 0) - (a.publishedAt?.getTime() ?? 0));
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://recipesbymaren.com";
   const categoryUrl = `${siteUrl}/category/${category.slug}`;
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
+      { "@type": "ListItem", position: 2, name: "All Recipes", item: `${siteUrl}/recipes` },
+      { "@type": "ListItem", position: 3, name: category.name, item: categoryUrl }
+    ]
+  };
   const collectionSchema = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
