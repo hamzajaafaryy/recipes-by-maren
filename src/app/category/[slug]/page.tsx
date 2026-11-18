@@ -127,6 +127,7 @@ export default async function CategoryPage({ params }: Props) {
         </div>
       ) : <p className="empty-listing">New recipes in this collection are on the way. Please check back soon.</p>}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, "\\u003c") }} />
     </main>
   );
 }
