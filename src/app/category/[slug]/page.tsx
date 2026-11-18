@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+export const dynamic = "force-dynamic";
+
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { getRecipeImageUrl } from "@/lib/recipe-media";
