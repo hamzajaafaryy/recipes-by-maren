@@ -21,7 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         select: { slug: true, updatedAt: true }
       }),
       prisma.category.findMany({
-        where: { recipes: { some: { recipe: { status: "PUBLISHED", publishedAt: { not: null } } } },
+        where: { recipes: { some: { recipe: { status: "PUBLISHED", publishedAt: { not: null } } } } },
         select: { slug: true, updatedAt: true }
       })
     ]);
