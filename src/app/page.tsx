@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 export const dynamic = "force-dynamic";
 
 import { prisma } from "@/lib/prisma";
@@ -108,7 +109,7 @@ export default async function HomePage() {
         {categories.length ? (
           <div className="category-grid">
             {categories.map((category) => (
-              <a className="category-card" href={`/category/${category.slug}`} key={category.id}>
+              <Link className="category-card" href={`/category/${category.slug}`} key={category.id}>
                 <div className="category-photo-wrap">
                   <div
                     className="category-photo"
@@ -119,7 +120,7 @@ export default async function HomePage() {
                 </div>
                 <h3>{category.name}</h3>
                 <span>{category.recipes.length} {category.recipes.length === 1 ? "recipe" : "recipes"}</span>
-              </a>
+              </Link>
             ))}
           </div>
         ) : (
@@ -143,16 +144,16 @@ export default async function HomePage() {
                 const category = recipe.categories[0]?.category.name || "From the kitchen";
                 return (
                   <article className="recipe-card" key={recipe.id}>
-                    <a href={`/recipes/${recipe.slug}`} className="recipe-card-link" aria-label={`Read ${recipe.title}`}>
+                    <Link href={`/recipes/${recipe.slug}`} className="recipe-card-link" aria-label={`Read ${recipe.title}`}>
                       {image ? (
                         <div className="recipe-photo" role="img" aria-label={recipe.title} style={{ backgroundImage: `url("${image}")` }} />
                       ) : (
                         <div className="recipe-photo recipe-photo-empty" aria-hidden="true" />
                       )}
-                    </a>
+                    </Link>
                     <div className="recipe-info">
                       <span className="recipe-meta">{category}</span>
-                      <h3><a href={`/recipes/${recipe.slug}`}>{recipe.title}</a></h3>
+                      <h3><Link href={`/recipes/${recipe.slug}`}>{recipe.title}</Link></h3>
                       <p>{recipe.excerpt}</p>
                       {recipe.totalMinutes ? <span className="recipe-time">{recipe.totalMinutes} minutes</span> : null}
                     </div>
