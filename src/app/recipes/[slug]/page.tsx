@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 export const revalidate = 3600;
 
 import { notFound } from "next/navigation";
@@ -105,14 +106,14 @@ export default async function RecipePage({ params }: Props) {
       {image ? (
         <figure className="recipe-hero-figure">
           {/* unoptimized keeps Cloudinary's f_auto/q_auto transformations and avoids a second image proxy */}
-          <img
+          <Image
             className="recipe-hero-image"
             src={image}
             alt={`${recipe.title} — finished dish`}
             width={1600}
             height={900}
-            fetchPriority="high"
-            decoding="async"
+            priority
+            unoptimized
           />
           {pinterestImage ? <PinterestSaveButton pageUrl={pageUrl} imageUrl={pinterestImage} description={`${recipe.title} — easy recipe from Recipes by Maren`} /> : null}
         </figure>
