@@ -353,3 +353,11 @@ body:has(.admin-login) .announcement { display: none; }
 .search-result-count{color:var(--muted);font-size:12px;margin:0 0 18px}
 @media(max-width:800px){.content-page{padding:30px 20px 60px}.recipe-layout{grid-template-columns:1fr;gap:20px}.recipe-facts{order:-1}.listing-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}}
 @media(max-width:520px){.content-page{padding:24px 16px 48px}.recipe-header h1,.listing-header h1{font-size:42px}.recipe-excerpt,.listing-header>p{font-size:14px}.recipe-hero-image{aspect-ratio:4/3;margin-bottom:28px}.listing-grid{grid-template-columns:1fr}.recipe-search-form{flex-direction:column}.recipe-search-form button{min-height:46px}}
+
+/* Recipe hero media and Pinterest sharing */
+.recipe-hero-figure{position:relative;max-width:1080px;margin:0 auto 42px}
+.recipe-hero-image{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;background:#e9e3d8}
+.pinterest-save-button{position:absolute;right:16px;bottom:16px;display:inline-flex;align-items:center;gap:9px;padding:11px 16px;border-radius:3px;background:#bd081c;color:#fff;font-size:11px;font-weight:700;letter-spacing:.04em;box-shadow:0 4px 16px #0002;transition:transform .2s,background .2s}
+.pinterest-save-button:hover{background:#9f0617;transform:translateY(-1px)}
+.pinterest-save-button span{display:grid;place-items:center;width:19px;height:19px;border-radius:50%;background:#fff;color:#bd081c;font:700 13px Georgia,serif}
+@media(max-width:520px){.recipe-hero-figure{margin-bottom:28px}.recipe-hero-image{aspect-ratio:4/3}.pinterest-save-button{right:10px;bottom:10px;padding:9px 12px;font-size:10px}}
