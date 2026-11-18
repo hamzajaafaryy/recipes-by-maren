@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       url: canonical,
-      authors: [recipe.author.name],
+      authors: [`${siteUrl}/about`],
       publishedTime: recipe.publishedAt?.toISOString(),
       modifiedTime: recipe.updatedAt.toISOString(),
       ...(image ? { images: [{ url: image, width: 1200, height: 630, alt: `${recipe.title} recipe` }] } : {})
