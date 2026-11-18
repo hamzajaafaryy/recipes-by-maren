@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { prisma } from "@/lib/prisma";
+import { getRecipeImageUrl } from "@/lib/recipe-media";
 
 export const metadata: Metadata = {
   title: "Easy Dinner Ideas, Cozy Bakes & Everyday Recipes",
@@ -7,67 +9,50 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
   openGraph: {
     title: "Recipes by Maren — Real Food for Real Life",
-    description:
-      "Approachable dinner ideas, cozy bakes, and simple recipes for everyday home cooking.",
+    description: "Approachable dinner ideas, cozy bakes, and simple recipes for everyday home cooking.",
     type: "website"
   }
 };
 
-const categories = [
-  {
-    name: "Weeknight Dinners",
-    count: "Easy ideas for busy evenings",
-    image: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=80",
-    alt: "A colorful, freshly prepared dinner served at home"
-  },
-  {
-    name: "One-Pot Favorites",
-    count: "Less cleanup, more comfort",
-    image: "https://images.unsplash.com/photo-1476124369491-e7da6fcca9a8?auto=format&fit=crop&w=700&q=80",
-    alt: "A comforting one-pot meal ready to serve"
-  },
-  {
-    name: "Something Sweet",
-    count: "Bakes, treats & little joys",
-    image: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=700&q=80",
-    alt: "A sweet dessert with fresh fruit"
-  },
-  {
-    name: "Fresh & Feel-Good",
-    count: "Bright, colorful everyday meals",
-    image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=700&q=80",
-    alt: "A fresh salad with colorful seasonal vegetables"
-  }
-];
+const categoryImages: Record<string, string> = {
+  "weeknight-dinners": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=80",
+  "one-pot-meals": "https://images.unsplash.com/photo-1476124369491-e7da6fcca9a8?auto=format&fit=crop&w=700&q=80",
+  "air-fryer": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=700&q=80",
+  "budget-friendly": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=700&q=80",
+  "desserts-baking": "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=700&q=80"
+};
 
-const recipes = [
-  {
-    title: "Creamy Tuscan Chicken",
-    category: "Weeknight favorite",
-    description: "Golden chicken in a cozy garlic cream sauce with spinach and sun-dried tomatoes.",
-    time: "30 minutes",
-    image: "https://images.unsplash.com/photo-1534939561126-855b8675edd7?auto=format&fit=crop&w=900&q=85",
-    alt: "Creamy chicken dinner with herbs and vegetables"
-  },
-  {
-    title: "Lemon Butter Orzo",
-    category: "One-pot comfort",
-    description: "A bright, silky orzo dinner with lemon, herbs, and a little parmesan.",
-    time: "25 minutes",
-    image: "https://images.unsplash.com/photo-1476124369491-e7da6fcca9a8?auto=format&fit=crop&w=900&q=85",
-    alt: "A bowl of orzo pasta ready to enjoy"
-  },
-  {
-    title: "Strawberry Crumble Bars",
-    category: "Something sweet",
-    description: "Buttery oat layers, juicy berries, and crisp golden edges in every bite.",
-    time: "45 minutes",
-    image: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=900&q=85",
-    alt: "Homemade strawberry dessert bars"
+async function getHomeContent() {
+  try {
+    const [categories, recipes] = await Promise.all([
+      prisma.category.findMany({
+        where: { recipes: { some: { recipe: { status: "PUBLISHED", publishedAt: { not: null } } } } },
+        include: {
+          recipes: {
+            where: { recipe: { status: "PUBLISHED", publishedAt: { not: null } } },
+            select: { recipeId: true }
+          }
+        },
+        orderBy: { name: "asc" }
+      }),
+      prisma.recipe.findMany({
+        where: { status: "PUBLISHED", publishedAt: { not: null } },
+        orderBy: { publishedAt: "desc" },
+        take: 3,
+        select: {
+          id: true, title: true, slug: true, excerpt: true, heroPublicId: true, totalMinutes: true,
+          categories: { include: { category: { select: { name: true } } } }
+        }
+      })
+    ]);
+    return { categories, recipes };
+  } catch {
+    return { categories: [], recipes: [] };
   }
-];
+}
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { categories, recipes } = await getHomeContent();
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://recipesbymaren.com";
   const websiteSchema = {
     "@context": "https://schema.org",
@@ -107,17 +92,26 @@ export default function HomePage() {
           </div>
           <p>A little something for every kind of craving.</p>
         </div>
-        <div className="category-grid">
-          {categories.map((category) => (
-            <article className="category-card" key={category.name}>
-              <div className="category-photo-wrap">
-                <div className="category-photo" role="img" aria-label={category.alt} style={{ backgroundImage: `url("${category.image}")` }} />
-              </div>
-              <h3>{category.name}</h3>
-              <span>{category.count}</span>
-            </article>
-          ))}
-        </div>
+        {categories.length ? (
+          <div className="category-grid">
+            {categories.map((category) => (
+              <a className="category-card" href={`/category/${category.slug}`} key={category.id}>
+                <div className="category-photo-wrap">
+                  <div
+                    className="category-photo"
+                    role="img"
+                    aria-label={category.name}
+                    style={categoryImages[category.slug] ? { backgroundImage: `url("${categoryImages[category.slug]}")` } : undefined}
+                  />
+                </div>
+                <h3>{category.name}</h3>
+                <span>{category.recipes.length} {category.recipes.length === 1 ? "recipe" : "recipes"}</span>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p className="empty-home-state">Recipe collections will appear here as soon as the first recipes are published.</p>
+        )}
       </section>
 
       <section className="featured-section" id="latest" aria-labelledby="latest-heading">
@@ -125,23 +119,37 @@ export default function HomePage() {
           <div className="section-heading">
             <div>
               <span className="eyebrow">From the recipe box</span>
-              <h2 id="latest-heading">A few things to make soon</h2>
+              <h2 id="latest-heading">The latest recipes</h2>
             </div>
-            <a className="text-link" href="#categories">Explore categories</a>
+            <a className="text-link" href="/search">Search the recipe box</a>
           </div>
-          <div className="recipe-grid">
-            {recipes.map((recipe) => (
-              <article className="recipe-card" key={recipe.title}>
-                <div className="recipe-photo" role="img" aria-label={recipe.alt} style={{ backgroundImage: `url("${recipe.image}")` }} />
-                <div className="recipe-info">
-                  <span className="recipe-meta">{recipe.category}</span>
-                  <h3>{recipe.title}</h3>
-                  <p>{recipe.description}</p>
-                  <span className="recipe-time"><span aria-hidden="true">◷</span> &nbsp; {recipe.time}</span>
-                </div>
-              </article>
-            ))}
-          </div>
+          {recipes.length ? (
+            <div className="recipe-grid">
+              {recipes.map((recipe) => {
+                const image = getRecipeImageUrl(recipe.heroPublicId, 900);
+                const category = recipe.categories[0]?.category.name || "From the kitchen";
+                return (
+                  <article className="recipe-card" key={recipe.id}>
+                    <a href={`/recipes/${recipe.slug}`} className="recipe-card-link" aria-label={`Read ${recipe.title}`}>
+                      {image ? (
+                        <div className="recipe-photo" role="img" aria-label={recipe.title} style={{ backgroundImage: `url("${image}")` }} />
+                      ) : (
+                        <div className="recipe-photo recipe-photo-empty" aria-hidden="true" />
+                      )}
+                    </a>
+                    <div className="recipe-info">
+                      <span className="recipe-meta">{category}</span>
+                      <h3><a href={`/recipes/${recipe.slug}`}>{recipe.title}</a></h3>
+                      <p>{recipe.excerpt}</p>
+                      {recipe.totalMinutes ? <span className="recipe-time">{recipe.totalMinutes} minutes</span> : null}
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="empty-home-state">New recipes are being prepared. Check back soon for the first collection.</p>
+          )}
         </div>
       </section>
 
@@ -161,7 +169,7 @@ export default function HomePage() {
         <span className="eyebrow">A good thing in your inbox</span>
         <h2 id="newsletter-heading">Let’s make something lovely.</h2>
         <p>Our newsletter sign-up is being prepared. In the meantime, explore the recipe collection and find a new favorite.</p>
-        <a className="button-primary newsletter-link" href="#latest">Explore the recipe box</a>
+        <a className="button-primary newsletter-link" href="/search">Find a recipe</a>
       </section>
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, "\\u003c") }} />
