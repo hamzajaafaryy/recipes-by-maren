@@ -22,6 +22,13 @@ Open http://localhost:3000.
 ## Environment
 See `.env.example`. The public website can run locally without Supabase or Cloudinary credentials using the starter recipe data. Configure those services before enabling publishing or image uploads.
 
+## Pinterest and social sharing
+
+- Recipe pages generate a 1000×1500 Cloudinary image for the Pinterest Save action when a recipe hero image is configured.
+- Open Graph and Twitter previews are configured for the homepage, recipe pages, and category pages.
+- Recipe JSON-LD includes publisher, canonical URL, recipe category, keywords, ingredients, instructions, and real publication dates. Nutrition and aggregate ratings are intentionally omitted unless verified source data is available.
+- To claim the production domain, add the verification token supplied by Pinterest Business to `PINTEREST_DOMAIN_VERIFICATION` in the hosting environment, redeploy, then complete verification in Pinterest. Do not use a guessed token.
+
 ## Content principles
 Publish original, carefully reviewed recipes. Do not invent testing claims, author credentials, ratings, or nutrition facts.
 
