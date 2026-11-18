@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type RecipeRow = { id: string; title: string; slug: string; status: string; updatedAt: string };
 
@@ -67,12 +68,12 @@ export default function AdminDashboard() {
   return (
     <main className="admin-shell">
       <aside className="admin-sidebar">
-        <a className="admin-brand" href="/">Recipes by Maren</a>
+        <Link className="admin-brand" href="/">Recipes by Maren</Link>
         <span className="admin-side-label">WORKSPACE</span>
         <a className="admin-side-link active" href="/admin">Overview</a>
         <a className="admin-side-link" href="#new-recipe">New recipe</a>
         <a className="admin-side-link" href="#recipe-library">Recipe library</a>
-        <a className="admin-side-link" href="/">View website ↗</a>
+        <Link className="admin-side-link" href="/">View website ↗</Link>
         <button className="admin-logout" onClick={logout}>Sign out</button>
       </aside>
       <section className="admin-main">
