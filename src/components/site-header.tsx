@@ -43,7 +43,7 @@ export default function SiteHeader() {
         </Link>
 
         <div className="site-header-actions">
-          <Link className="site-header-cta" href="/#newsletter">Get the newsletter</Link>
+          <Link className="site-header-cta" href="/#latest">Explore recipes</Link>
         </div>
       </header>
     </>
