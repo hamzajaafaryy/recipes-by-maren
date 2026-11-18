@@ -23,7 +23,7 @@ The current repository is a visual starter and technical foundation, not a launc
 - [ ] Cloudinary helper exists, but there is no upload workflow and no recipe page consuming it.
 
 ### P1 — Required before SEO / monetization launch
-- [ ] Sitemap is static and excludes dynamic recipes/categories.
+- [x] Sitemap includes published recipe/category routes and uses the latest published recipe update date for the homepage rather than the current time.
 - [ ] Recipe JSON-LD component exists but is not used by any recipe page.
 - [ ] Homepage images use remote Unsplash URLs as visual placeholders; recipe image ownership/licensing and production assets need review.
 - [ ] Privacy page explicitly identifies itself as a draft; actual analytics, advertising, cookies, newsletter providers, retention and contact details must be documented.
@@ -53,6 +53,14 @@ The current repository is a visual starter and technical foundation, not a launc
 - Corrected the ESLint flat-config preset shape that caused the deployment warning.
 - Made admin authentication fail closed instead of throwing when AUTH_SECRET is missing and a stale session cookie is present.
 - Added this audit and roadmap document.
+
+## Pinterest and social SEO implementation notes
+
+- Recipe hero images render through Next Image with explicit dimensions, descriptive alt text, and priority loading.
+- Recipe pages provide a Pinterest Save action using a Cloudinary 1000×1500 vertical crop.
+- Homepage, recipe, and category pages expose Open Graph/Twitter preview images; category pages include CollectionPage/ItemList and BreadcrumbList structured data.
+- Root metadata includes a default social image and SVG site icon. Pinterest domain verification is supported through `PINTEREST_DOMAIN_VERIFICATION`; the account-specific token must be supplied by the site owner.
+- Recipe/category pages use one-hour ISR revalidation; the recipes index also uses ISR.
 
 ## UI/UX and SEO implementation notes
 
