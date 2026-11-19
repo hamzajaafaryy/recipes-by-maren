@@ -527,3 +527,301 @@ body:has(.admin-login) .announcement { display: none; }
  .maren-recipe-details h3,.maren-index-card-copy h2{font-size:22px}
 }
 @media(prefers-reduced-motion:reduce){.maren-home a,.maren-recipes-page a,.maren-category-image img,.maren-recipe-image img,.maren-index-card-image img{transition:none}}
+
+
+/* Modern & Clean design system — Phase 1 */
+:root {
+  --cream: #f7f8f5;
+  --paper: #ffffff;
+  --ink: #202923;
+  --muted: #68736b;
+  --green: #486b55;
+  --green-dark: #294a36;
+  --orange: #c77a52;
+  --line: #e6ebe5;
+}
+body { background: #fff; color: #202923; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+.announcement { background: #294a36; padding: 8px 16px; font-size: 10px; letter-spacing: .09em; }
+.site-header {
+  max-width: 1320px; min-height: 88px; padding: 17px 34px;
+  grid-template-columns: auto minmax(0,1fr) auto; gap: 34px;
+}
+.site-brand { grid-column: 1; align-items: flex-start; text-align: left; }
+.site-brand-name { font: 750 23px/1.05 Inter, ui-sans-serif, system-ui, sans-serif; letter-spacing: -.065em; color: #202923; }
+.site-brand-period { color: #5c8669; }
+.site-brand-tagline { margin-top: 6px; font: 600 8px/1 Inter, ui-sans-serif, system-ui, sans-serif; letter-spacing: .13em; color: #78847b; }
+.site-nav { grid-column: 2; justify-self: center; gap: clamp(16px,2.2vw,30px); color: #4c5950; font-size: 12px; font-weight: 600; }
+.site-nav a { padding: 10px 0; }
+.site-nav a:hover { color: #477653; }
+.site-header-actions { grid-column: 3; }
+.site-header-cta { display: inline-flex; align-items: center; gap: 12px; border-radius: 999px; background: #486b55; padding: 12px 18px; font-size: 10px; font-weight: 700; letter-spacing: .03em; text-transform: none; }
+.site-header-cta:hover { background: #294a36; transform: translateY(-1px); }
+.maren-home { --maren-ink:#202923; --maren-muted:#68736b; --maren-sage:#486b55; --maren-clay:#c77a52; --maren-cream:#f7f8f5; --maren-line:#e6ebe5; background:#fff; color:#202923; }
+.maren-home a { transition: color .18s ease, background .18s ease, transform .22s ease, box-shadow .22s ease; }
+.maren-eyebrow { color:#64806a; font-size:9px; letter-spacing:.14em; }
+.maren-eyebrow>span { background:#86a18a; }
+.maren-hero { max-width:1320px; padding:46px 34px 76px; grid-template-columns:.92fr 1.08fr; gap:5vw; }
+.maren-hero-copy { padding:20px 0 20px 1vw; }
+.maren-hero h1 { font:750 clamp(48px,5.5vw,76px)/1.02 Inter,ui-sans-serif,system-ui,sans-serif; letter-spacing:-.075em; color:#202923; margin:20px 0 19px; }
+.maren-hero h1 em { color:#52765c; font-style:normal; }
+.maren-hero-copy>p { max-width:430px; color:#66736a; font-size:15px; line-height:1.8; }
+.maren-search { border:1px solid #e1e8e1; border-radius:14px; padding:6px 6px 6px 16px; box-shadow:0 12px 35px #1d35250c; }
+.maren-search>span { font-size:22px; }
+.maren-search input { font-size:13px; }
+.maren-search button { border-radius:10px; background:#486b55; padding:14px 19px; font-size:10px; font-weight:700; letter-spacing:0; text-transform:none; }
+.maren-search button:hover { background:#294a36; }
+.maren-hero-links { gap:11px 15px; }
+.maren-hero-links>span { color:#849087; font-size:8px; }
+.maren-hero-links a { color:#486b55; border-color:#d5e0d6; font-size:10px; }
+.maren-hero-visual { aspect-ratio:1.18/1; border-radius:24px; overflow:visible; background:#edf1eb; }
+.maren-hero-visual>img { border-radius:24px; }
+.maren-hero-stamp { left:-22px; width:112px; height:112px; background:#fff; color:#486b55; box-shadow:0 10px 32px #20342818; transform:rotate(-7deg); }
+.maren-hero-caption { right:15px; bottom:15px; border-radius:10px; background:#ffffffed; color:#34483a; font:600 11px Inter,ui-sans-serif,system-ui,sans-serif; box-shadow:0 5px 20px #20342812; }
+.maren-category-section { max-width:1320px; padding:52px 34px 78px; }
+.maren-section-top h2,.maren-index-heading h2 { font:750 clamp(30px,3.5vw,43px)/1.12 Inter,ui-sans-serif,system-ui,sans-serif; letter-spacing:-.06em; color:#202923; }
+.maren-section-top p { color:#748077; font-size:12px; }
+.maren-arrow-link { color:#486b55; border-color:#cbd9ce; font-weight:700; }
+.maren-category-grid { gap:18px; }
+.maren-category-card { display:block; }
+.maren-category-image { border-radius:16px; aspect-ratio:1.22/1; }
+.maren-category-image img { transition:transform .35s ease; }
+.maren-category-count { left:11px; bottom:11px; border-radius:7px; background:#fff; color:#425c49; font-size:8px; font-weight:700; }
+.maren-category-name { font:700 15px/1.35 Inter,ui-sans-serif,system-ui,sans-serif; color:#27332b; margin-top:12px; }
+.maren-category-arrow { color:#63816a; }
+.maren-latest-section { background:#f6f8f5; padding:72px 34px 84px; }
+.maren-latest-section>.maren-section-top,.maren-latest-section>.maren-recipe-grid,.maren-latest-section>.maren-empty { max-width:1252px; }
+.maren-recipe-grid { gap:22px; }
+.maren-recipe-card { border:1px solid #e8ede8; border-radius:17px; overflow:hidden; box-shadow:0 7px 24px #24362908; }
+.maren-recipe-image { aspect-ratio:1.35/1; background:#e9eee8; }
+.maren-recipe-details { padding:18px 18px 17px; }
+.maren-card-category { color:#6d896f; letter-spacing:.11em; }
+.maren-recipe-details h3 { font:700 20px/1.25 Inter,ui-sans-serif,system-ui,sans-serif; letter-spacing:-.04em; color:#26332a; }
+.maren-recipe-details>p { color:#748077; font-size:12px; line-height:1.7; }
+.maren-card-footer { border-color:#edf0eb; }
+.maren-card-footer>span { color:#748077; }
+.maren-card-footer>a { color:#486b55; font-weight:700; }
+.maren-feature-band { max-width:1252px; margin:76px auto; gap:6%; }
+.maren-feature-photo { border-radius:20px; overflow:hidden; background:#edf1eb; }
+.maren-feature-copy h2 { font:750 clamp(32px,4vw,50px)/1.08 Inter,ui-sans-serif,system-ui,sans-serif; letter-spacing:-.06em; color:#202923; }
+.maren-feature-copy p { color:#68736b; font-size:14px; }
+.maren-solid-link { border-radius:10px; background:#486b55; font-weight:700; letter-spacing:0; text-transform:none; }
+.maren-about-band { background:#edf3ed; padding-top:58px; padding-bottom:58px; }
+.maren-about-band h2 { font:750 clamp(28px,3.3vw,41px)/1.12 Inter,ui-sans-serif,system-ui,sans-serif; letter-spacing:-.06em; color:#202923; }
+.maren-about-band h2 em { color:#52765c; font-style:normal; }
+.maren-about-band>p { color:#66736a; font-size:13px; }
+.maren-empty { border:1px dashed #dce5dc; border-radius:14px; background:#f8faf7; }
+.site-footer { background:#20382a; }
+.site-footer-brand { font:750 25px Inter,ui-sans-serif,system-ui,sans-serif; letter-spacing:-.06em; }
+.site-footer-tagline { color:#c5d3c7; }
+.site-footer-links { color:#e3ece4; }
+@media(max-width:900px) {
+  .site-header { gap:18px; padding-left:24px; padding-right:24px; }
+  .site-nav { gap:14px; font-size:11px; }
+  .maren-hero { padding:36px 24px 58px; }
+}
+@media(max-width:800px) {
+  .site-header { min-height:76px; padding:15px 20px; grid-template-columns:auto 1fr auto; gap:10px; }
+  .site-brand { grid-column:2; justify-self:center; align-items:center; text-align:center; }
+  .mobile-menu-toggle { grid-column:1; display:inline-flex; align-items:center; gap:6px; border:0; padding:8px 4px; background:transparent; color:#26332a; cursor:pointer; font-size:11px; font-weight:700; }
+  .mobile-menu-toggle>span:first-child { font-size:19px; line-height:1; }
+  .site-nav { display:none; position:absolute; top:calc(100% - 1px); left:14px; right:14px; z-index:40; padding:10px; background:#fff; border:1px solid #e6ebe5; border-radius:14px; box-shadow:0 16px 40px #20342818; flex-direction:column; align-items:stretch; gap:0; }
+  .site-nav.is-open { display:flex; }
+  .site-nav a { padding:14px 12px; border-bottom:1px solid #edf1ed; }
+  .site-nav a:last-child { border-bottom:0; }
+  .site-header-actions { grid-column:3; }
+  .site-header-cta { padding:10px 12px; font-size:9px; }
+  .maren-hero { grid-template-columns:1fr; padding:30px 22px 52px; gap:26px; }
+  .maren-hero-copy { padding:8px 0 0; }
+  .maren-hero h1 { font-size:clamp(48px,9vw,68px); }
+  .maren-hero-visual { aspect-ratio:1.4/1; margin:0 0 0 15px; }
+  .maren-category-section { padding:48px 22px 60px; }
+  .maren-latest-section { padding:58px 22px 66px; }
+}
+@media(max-width:520px) {
+  .announcement { font-size:8px; letter-spacing:.06em; }
+  .site-header { padding:13px 12px; gap:5px; }
+  .site-brand-name { font-size:18px; }
+  .site-brand-tagline { font-size:6px; letter-spacing:.08em; }
+  .mobile-menu-toggle { font-size:9px; gap:3px; }
+  .site-header-cta { padding:9px 9px; font-size:8px; }
+  .maren-hero { padding:24px 16px 42px; }
+  .maren-hero h1 { font-size:clamp(43px,12vw,58px); }
+  .maren-hero-copy>p { font-size:13px; }
+  .maren-search { padding-left:11px; gap:7px; }
+  .maren-search input { font-size:11px; }
+  .maren-search button { padding:12px 11px; font-size:9px; }
+  .maren-hero-visual { aspect-ratio:1.15/1; margin-left:12px; }
+  .maren-hero-stamp { width:86px; height:86px; left:-13px; }
+  .maren-hero-stamp strong { font-size:15px; }
+  .maren-hero-caption { font-size:9px; padding:9px 10px; }
+  .maren-category-section,.maren-latest-section { padding:42px 16px 52px; }
+  .maren-section-top { align-items:flex-start; flex-direction:column; gap:13px; }
+  .maren-category-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:17px 12px; }
+  .maren-category-name { font-size:13px; }
+  .maren-recipe-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:11px; }
+  .maren-recipe-details { padding:12px; }
+  .maren-recipe-details h3 { font-size:15px; }
+  .maren-recipe-details>p { font-size:10px; }
+  .maren-card-footer { align-items:flex-start; flex-direction:column; gap:7px; }
+  .maren-card-footer>a { font-size:9px; }
+  .maren-feature-band { grid-template-columns:1fr; padding:0 16px; margin:48px auto; gap:22px; }
+  .maren-feature-copy h2 { font-size:34px; }
+  .maren-about-band { grid-template-columns:1fr; padding:40px 18px; gap:12px; }
+  .maren-about-band>.maren-arrow-link { grid-column:auto; width:max-content; margin-top:8px; }
+}
+@media(max-width:380px) {
+  .site-brand-name { font-size:16px; }
+  .site-header-cta { padding:8px 7px; font-size:7px; }
+  .maren-recipe-grid { grid-template-columns:1fr; }
+  .maren-recipe-image { aspect-ratio:1.4/1; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .maren-home a,.maren-category-image img,.maren-recipe-image img { transition:none; }
+}
+
+
+/* Category collection page — aligned with the Maren design system */
+.maren-category-page {
+  min-height: 65vh;
+  padding: 30px 24px 88px;
+  background: #fff;
+}
+.maren-category-inner { width: min(1240px, 100%); margin: 0 auto; }
+.maren-category-breadcrumbs {
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+  color:#879188; font-size:11px; margin:0 0 44px;
+}
+.maren-category-breadcrumbs a:hover { color:#486b55; }
+.maren-category-heading {
+  max-width:760px; margin:0 auto 48px; text-align:center;
+}
+.maren-category-heading h1 {
+  margin:13px 0 15px; color:#202923;
+  font:750 clamp(38px,5.2vw,62px)/1.05 Inter,ui-sans-serif,system-ui,sans-serif;
+  letter-spacing:-.065em;
+}
+.maren-category-heading h1 em { color:#52765c; font-style:normal; }
+.maren-category-heading>p {
+  max-width:610px; margin:0 auto; color:#748077;
+  font-size:15px; line-height:1.8;
+}
+.maren-category-total-count {
+  display:inline-flex; margin-top:22px; padding:8px 13px;
+  border:1px solid #e5ebe5; border-radius:999px;
+  color:#597360; background:#f8faf7; font-size:10px; font-weight:700;
+  letter-spacing:.04em;
+}
+.maren-category-page .maren-category-grid {
+  display:grid; grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:26px; align-items:stretch;
+}
+.maren-category-recipe-card {
+  display:flex; flex-direction:column; min-width:0; overflow:hidden;
+  border:1px solid #e7ece7; border-radius:17px; background:#fff;
+  box-shadow:0 8px 28px #20342809;
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+.maren-category-recipe-card:hover {
+  transform:translateY(-3px); box-shadow:0 14px 34px #20342813;
+}
+.maren-category-recipe-image {
+  display:block; position:relative; overflow:hidden;
+  aspect-ratio: 4 / 3; background:#edf1eb;
+}
+.maren-category-image-fill {
+  position:absolute; inset:0; background-position:center; background-size:cover;
+  transition:transform .35s ease;
+}
+.maren-category-recipe-card:hover .maren-category-image-fill { transform:scale(1.035); }
+.maren-category-image-fill.is-empty {
+  background:linear-gradient(135deg,#f0f3ee,#e4ebe2);
+}
+.maren-category-recipe-copy {
+  display:flex; flex:1; flex-direction:column; padding:20px 20px 17px;
+}
+.maren-category-recipe-copy h2 {
+  margin:0 0 10px; color:#26332a;
+  font:700 20px/1.28 Inter,ui-sans-serif,system-ui,sans-serif;
+  letter-spacing:-.04em;
+}
+.maren-category-recipe-copy h2 a:hover { color:#52765c; }
+.maren-category-recipe-copy>p {
+  margin:0 0 20px; color:#748077; font-size:12px; line-height:1.75;
+}
+.maren-category-card-footer {
+  display:flex; align-items:center; justify-content:space-between; gap:12px;
+  margin-top:auto; padding-top:14px; border-top:1px solid #edf1ed;
+}
+.maren-category-card-footer>span {
+  color:#879188; font-size:10px; font-weight:700; letter-spacing:.04em;
+}
+.maren-category-card-footer>a {
+  color:#486b55; font-size:11px; font-weight:700; white-space:nowrap;
+}
+.maren-category-card-footer>a:hover { color:#294a36; }
+.maren-category-empty {
+  padding:36px 20px; border:1px dashed #dce5dc; border-radius:15px;
+  background:#f8faf7; color:#748077; text-align:center; font-size:14px;
+}
+@media(max-width:900px) {
+  .maren-category-page .maren-category-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+  .maren-category-page { padding:26px 22px 66px; }
+}
+@media(max-width:560px) {
+  .maren-category-page { padding:22px 16px 52px; }
+  .maren-category-breadcrumbs { margin-bottom:32px; }
+  .maren-category-heading { margin-bottom:32px; }
+  .maren-category-heading h1 { font-size:40px; }
+  .maren-category-heading>p { font-size:13px; }
+  .maren-category-page .maren-category-grid { grid-template-columns:1fr; gap:17px; }
+  .maren-category-recipe-image { aspect-ratio:16 / 10; }
+  .maren-category-recipe-copy { padding:16px; }
+  .maren-category-recipe-copy h2 { font-size:18px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .maren-category-recipe-card,.maren-category-image-fill { transition:none; }
+}
+
+/* Clear category directory and descriptive collection cards */
+.maren-categories-page { min-height:65vh; padding:28px 24px 88px; background:#fff; }
+.maren-categories-inner { width:min(1200px,100%); margin:0 auto; }
+.maren-categories-breadcrumbs { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:0 0 42px; color:#879188; font-size:11px; }
+.maren-categories-breadcrumbs a:hover { color:#52765c; }
+.maren-categories-hero { max-width:760px; margin:0 auto 48px; text-align:center; }
+.maren-categories-hero h1 { margin:14px 0 17px; color:#202923; font:750 clamp(40px,5.5vw,64px)/1.04 Inter,ui-sans-serif,system-ui,sans-serif; letter-spacing:-.065em; }
+.maren-categories-hero h1 em { color:#52765c; font-style:normal; }
+.maren-categories-hero p { max-width:650px; margin:0 auto; color:#748077; font-size:15px; line-height:1.85; }
+.maren-categories-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; align-items:stretch; }
+.maren-category-directory-card { display:flex; min-width:0; flex-direction:column; overflow:hidden; border:1px solid #e7ece7; border-radius:17px; background:#fff; box-shadow:0 8px 28px #20342809; }
+.maren-category-directory-image { position:relative; display:block; overflow:hidden; aspect-ratio:16/10; background:#edf1eb; }
+.maren-category-directory-image img { object-fit:cover; transition:transform .35s ease; }
+.maren-category-directory-card:hover .maren-category-directory-image img { transform:scale(1.035); }
+.maren-category-directory-number { position:absolute; top:13px; left:13px; display:grid; width:34px; height:34px; place-items:center; border:1px solid #ffffff80; border-radius:50%; background:#fffdf2e8; color:#344b39; font:13px Georgia,serif; }
+.maren-category-directory-copy { display:flex; flex:1; flex-direction:column; padding:19px 20px 20px; }
+.maren-category-directory-meta { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; color:#829087; font-size:9px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; }
+.maren-category-directory-copy h2 { margin:13px 0 9px; color:#26332a; font:700 22px/1.2 Inter,ui-sans-serif,system-ui,sans-serif; letter-spacing:-.04em; }
+.maren-category-directory-copy h2 a:hover { color:#52765c; }
+.maren-category-directory-copy p { margin:0 0 20px; color:#748077; font-size:12px; line-height:1.8; }
+.maren-category-directory-link { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:auto; padding-top:14px; border-top:1px solid #edf1ed; color:#486b55; font-size:11px; font-weight:700; }
+.maren-category-directory-link:hover { color:#294a36; }
+.maren-categories-empty { padding:38px 20px; border:1px dashed #dce5dc; border-radius:16px; background:#f8faf7; text-align:center; color:#748077; }
+.maren-categories-empty h2 { color:#26332a; font:26px Georgia,serif; }
+.maren-categories-empty p { font-size:13px; line-height:1.7; }
+.maren-categories-empty a { color:#486b55; font-weight:700; }
+.maren-category-description { display:block; max-width:250px; margin-top:7px; color:#748077; font-size:11px; line-height:1.65; }
+.maren-category-card { min-width:0; }
+.maren-category-name { display:block; margin-top:13px; }
+.maren-category-card .maren-category-arrow { top:auto; }
+@media(max-width:900px) { .maren-categories-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; } }
+@media(max-width:560px) {
+ .maren-categories-page { padding:22px 16px 54px; }
+ .maren-categories-breadcrumbs { margin-bottom:32px; }
+ .maren-categories-hero { margin-bottom:32px; }
+ .maren-categories-hero h1 { font-size:41px; }
+ .maren-categories-hero p { font-size:13px; }
+ .maren-categories-grid { grid-template-columns:1fr; gap:17px; }
+ .maren-category-directory-image { aspect-ratio:16/9; }
+ .maren-category-directory-copy { padding:16px; }
+ .maren-category-directory-copy h2 { font-size:20px; }
+ .maren-category-description { max-width:none; font-size:10px; }
+}

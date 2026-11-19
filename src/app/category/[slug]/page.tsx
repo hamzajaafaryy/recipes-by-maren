@@ -28,7 +28,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const category = await getCategory(slug);
   if (!category) return { title: "Category not found", robots: { index: false, follow: false } };
-  const description = category.description?.trim() || `Browse ${category.name.toLowerCase()} recipes from Recipes by Maren. Find approachable ideas for everyday home cooking.`;
+  const fullDescription = category.description?.trim() || `Browse ${category.name.toLowerCase()} recipes from Recipes by Maren. Find approachable ideas for everyday home cooking.`;
+  const description = fullDescription.length > 160 ? `${fullDescription.slice(0, 157).trimEnd()}...` : fullDescription;
   const recipes = category.recipes.map(({ recipe }) => recipe);
   const firstImage = recipes.find((recipe) => recipe.heroPublicId)?.heroPublicId;
   const image = getOpenGraphImageUrl(firstImage);
@@ -36,8 +37,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const canonical = `${siteUrl}/category/${category.slug}`;
 
   return {
-    title: `${category.name} Recipes`,
+    title: `${category.name} | Easy Recipes & Meal Ideas`,
     description,
+    ...(recipes.length < 3 ? { robots: { index: false, follow: true } } : {}),
     alternates: { canonical },
     openGraph: {
       title: `${category.name} Recipes | Recipes by Maren`,
@@ -100,32 +102,35 @@ export default async function CategoryPage({ params }: Props) {
   };
 
   return (
-    <main className="content-page category-page" id="main-content" tabIndex={-1}>
-      <nav className="breadcrumbs" aria-label="Breadcrumb"><Link href="/">Home</Link><span aria-hidden="true">/</span><Link href="/recipes">Recipes</Link><span aria-hidden="true">/</span><span>{category.name}</span></nav>
-      <header className="listing-header">
-        <span className="eyebrow">Browse the recipe box</span>
-        <h1>{category.name}</h1>
+    <main className="maren-category-page" id="main-content" tabIndex={-1}>
+      <div className="maren-category-inner">
+      <nav className="maren-category-breadcrumbs" aria-label="Breadcrumb"><Link href="/">Home</Link><span aria-hidden="true">/</span><Link href="/recipes">Recipes</Link><span aria-hidden="true">/</span><span>{category.name}</span></nav>
+      <header className="maren-category-heading">
+        <span className="maren-eyebrow">THE RECIPE COLLECTION</span>
+        <h1>{category.name}<em> recipes.</em></h1>
         <p>{category.description || `Easy, approachable ${category.name.toLowerCase()} for your everyday table.`}</p>
+        <div className="maren-category-total-count">{recipes.length} {recipes.length === 1 ? "recipe" : "recipes"} in this collection</div>
       </header>
       {recipes.length ? (
-        <div className="listing-grid">
+        <div className="maren-category-grid">
           {recipes.map((recipe) => {
             const image = getRecipeImageUrl(recipe.heroPublicId, 800);
             return (
-              <article className="recipe-card" key={recipe.id}>
-                <Link className="listing-image-link" href={`/recipes/${recipe.slug}`} aria-label={`Read ${recipe.title}`}>
-                  {image ? <div className="recipe-photo" role="img" aria-label={recipe.title} style={{ backgroundImage: `url("${image}")` }} /> : <div className="recipe-photo recipe-photo-empty" aria-hidden="true" />}
+              <article className="maren-category-recipe-card" key={recipe.id}>
+                <Link className="maren-category-recipe-image" href={`/recipes/${recipe.slug}`} aria-label={`Read ${recipe.title}`}>
+                  {image ? <div className="maren-category-image-fill" role="img" aria-label={recipe.title} style={{ backgroundImage: `url("${image}")` }} /> : <div className="maren-category-image-fill is-empty" aria-hidden="true" />}
                 </Link>
-                <div className="recipe-info">
+                <div className="maren-category-recipe-copy">
                   <h2><Link href={`/recipes/${recipe.slug}`}>{recipe.title}</Link></h2>
                   <p>{recipe.excerpt}</p>
-                  {recipe.totalMinutes ? <span className="recipe-time">{recipe.totalMinutes} minutes</span> : null}
+                  <div className="maren-category-card-footer"><span>{recipe.totalMinutes ? `◷ ${recipe.totalMinutes} min` : "FROM THE KITCHEN"}</span><Link href={`/recipes/${recipe.slug}`}>View recipe <span aria-hidden="true">→</span></Link></div>
                 </div>
               </article>
             );
           })}
         </div>
-      ) : <p className="empty-listing">New recipes in this collection are on the way. Please check back soon.</p>}
+      ) : <p className="maren-category-empty">New recipes in this collection are on the way. Please check back soon.</p>}
+      </div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema).replace(/</g, "\\u003c") }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, "\\u003c") }} />
     </main>

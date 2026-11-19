@@ -4,11 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 
 const links = [
-  { href: "/recipes", label: "All recipes" },
-  { href: "/#latest", label: "Latest recipes" },
-  { href: "/#categories", label: "Browse" },
-  { href: "/search", label: "Search" },
-  { href: "/about", label: "About" },
+  { href: "/recipes", label: "Recipes" },
+  { href: "/categories", label: "Categories" },
+  { href: "/about", label: "About Maren" },
   { href: "/contact", label: "Contact" }
 ];
 
@@ -17,8 +15,12 @@ export default function SiteHeader() {
 
   return (
     <>
-      <div className="announcement">A little inspiration for your everyday table</div>
+      <div className="announcement">Fresh ideas for everyday cooking · New recipes added regularly</div>
       <header className="site-header">
+        <Link className="site-brand" href="/" aria-label="Recipes by Maren home" onClick={() => setMenuOpen(false)}>
+          <span className="site-brand-name">Recipes by Maren<span className="site-brand-period">.</span></span>
+          <span className="site-brand-tagline">Simple food. Really good days.</span>
+        </Link>
         <button
           className="mobile-menu-toggle"
           type="button"
@@ -27,8 +29,8 @@ export default function SiteHeader() {
           aria-controls="site-navigation"
           onClick={() => setMenuOpen((open) => !open)}
         >
-          <span aria-hidden="true">{menuOpen ? "✕" : "☰"}</span>
-          <span className="mobile-menu-label">Menu</span>
+          <span aria-hidden="true">{menuOpen ? "×" : "☰"}</span>
+          <span className="mobile-menu-label">{menuOpen ? "Close" : "Menu"}</span>
         </button>
         <nav id="site-navigation" className={`site-nav${menuOpen ? " is-open" : ""}`} aria-label="Main navigation">
           {links.map((link) => (
@@ -37,12 +39,8 @@ export default function SiteHeader() {
             </Link>
           ))}
         </nav>
-        <Link className="site-brand" href="/" aria-label="Recipes by Maren home" onClick={() => setMenuOpen(false)}>
-          <span className="site-brand-name">Recipes by Maren</span>
-          <span className="site-brand-tagline">Real food. Simple recipes. Made with care.</span>
-        </Link>
         <div className="site-header-actions">
-          <Link className="site-header-cta" href="/search">Find a recipe</Link>
+          <Link className="site-header-cta" href="/search">Find a recipe <span aria-hidden="true">↗</span></Link>
         </div>
       </header>
     </>
