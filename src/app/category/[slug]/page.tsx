@@ -108,7 +108,7 @@ export default async function CategoryPage({ params }: Props) {
         <span className="maren-eyebrow">THE RECIPE COLLECTION</span>
         <h1>{category.name}<em> recipes.</em></h1>
         <p>{category.description || `Easy, approachable ${category.name.toLowerCase()} for your everyday table.`}</p>
-        <div className="maren-category-count">{recipes.length} {recipes.length === 1 ? "recipe" : "recipes"} in this collection</div>
+        <div className="maren-category-total-count">{recipes.length} {recipes.length === 1 ? "recipe" : "recipes"} in this collection</div>
       </header>
       {recipes.length ? (
         <div className="maren-category-grid">
