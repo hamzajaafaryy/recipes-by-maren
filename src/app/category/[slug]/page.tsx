@@ -37,8 +37,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const canonical = `${siteUrl}/category/${category.slug}`;
 
   return {
-    title: `${category.name} Recipes`,
+    title: `${category.name} | Easy Recipes & Meal Ideas`,
     description,
+    ...(recipes.length < 3 ? { robots: { index: false, follow: true } } : {}),
     alternates: { canonical },
     openGraph: {
       title: `${category.name} Recipes | Recipes by Maren`,
