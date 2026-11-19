@@ -23,19 +23,25 @@ export const metadata: Metadata = {
 };
 
 const categoryImages: Record<string, string> = {
+  "dinner-recipes": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=82",
+  "chicken-recipes": "https://images.unsplash.com/photo-1532550907401-a500c9a57435?auto=format&fit=crop&w=700&q=82",
+  "breakfast-recipes": "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=700&q=82",
+  "healthy-recipes": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=700&q=82",
+  "pasta-recipes": "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=700&q=82",
+  "air-fryer": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=700&q=82",
   "weeknight-dinners": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=82",
   "one-pot-meals": "https://images.unsplash.com/photo-1476124369491-e7da6fcca9a8?auto=format&fit=crop&w=700&q=82",
-  "air-fryer": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=700&q=82",
   "budget-friendly": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=700&q=82",
   "desserts-baking": "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=700&q=82"
 };
+const categoryPriority = ["dinner-recipes", "chicken-recipes", "healthy-recipes", "air-fryer", "pasta-recipes", "breakfast-recipes", "weeknight-dinners", "one-pot-meals", "desserts-baking", "budget-friendly"];
 
 async function getHomeContent() {
   try {
     const [categories, recipes] = await Promise.all([
       prisma.category.findMany({
-        include: { recipes: { where: { recipe: { status: "PUBLISHED", publishedAt: { not: null } } }, select: { recipeId: true } } },
-        orderBy: { name: "asc" }
+        where: { recipes: { some: { recipe: { status: "PUBLISHED", publishedAt: { not: null } } } } },
+        include: { recipes: { where: { recipe: { status: "PUBLISHED", publishedAt: { not: null } } }, select: { recipeId: true } } }
       }),
       prisma.recipe.findMany({
         where: { status: "PUBLISHED", publishedAt: { not: null } },
@@ -56,6 +62,11 @@ async function getHomeContent() {
 export default async function HomePage() {
   const { categories, recipes } = await getHomeContent();
   const featured = recipes[0];
+  const orderedCategories = [...categories].sort((a, b) => {
+    const aIndex = categoryPriority.indexOf(a.slug);
+    const bIndex = categoryPriority.indexOf(b.slug);
+    return (aIndex === -1 ? 999 : aIndex) - (bIndex === -1 ? 999 : bIndex) || a.name.localeCompare(b.name);
+  });
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -80,9 +91,9 @@ export default async function HomePage() {
           </form>
           <div className="maren-hero-links">
             <span>POPULAR RIGHT NOW</span>
-            <Link href="/category/weeknight-dinners">Easy dinners</Link>
+            <Link href="/category/dinner-recipes">Easy dinners</Link>
+            <Link href="/category/chicken-recipes">Chicken recipes</Link>
             <Link href="/category/air-fryer">Air fryer</Link>
-            <Link href="/category/desserts-baking">Something sweet</Link>
           </div>
         </div>
         <div className="maren-hero-visual">
@@ -99,7 +110,7 @@ export default async function HomePage() {
         </div>
         {categories.length ? (
           <div className="maren-category-grid">
-            {categories.slice(0, 5).map((category) => (
+            {orderedCategories.slice(0, 6).map((category) => (
               <Link className="maren-category-card" href={`/category/${category.slug}`} key={category.id}>
                 <div className="maren-category-image">
                   {categoryImages[category.slug] ? <Image src={categoryImages[category.slug]} alt="" fill unoptimized sizes="(max-width: 600px) 50vw, 20vw" /> : <div className="maren-category-placeholder" />}
