@@ -95,7 +95,7 @@ export default async function HomePage() {
       <section className="maren-category-section" id="categories" aria-labelledby="category-heading">
         <div className="maren-section-top">
           <div><span className="maren-eyebrow"><span /> FIND YOUR CRAVING</span><h2 id="category-heading">What sounds good?</h2><p>Browse the collections and find something delicious to make.</p></div>
-          <Link className="maren-arrow-link" href="/recipes">Explore all recipes <span>↗</span></Link>
+          <Link className="maren-arrow-link" href="/categories">Explore all categories <span>↗</span></Link>
         </div>
         {categories.length ? (
           <div className="maren-category-grid">
@@ -106,6 +106,7 @@ export default async function HomePage() {
                   <span className="maren-category-count">{category.recipes.length} {category.recipes.length === 1 ? "recipe" : "recipes"}</span>
                 </div>
                 <span className="maren-category-name">{category.name}</span>
+                <span className="maren-category-description">{category.description || `Explore ${category.name.toLowerCase()} recipes for everyday cooking.`}</span>
                 <span className="maren-category-arrow" aria-hidden="true">↗</span>
               </Link>
             ))}
