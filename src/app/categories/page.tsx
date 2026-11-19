@@ -7,6 +7,16 @@ export const revalidate = 3600;
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://recipesbymaren.com";
 const categoryImages: Record<string, string> = {
+  "dinner-recipes": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=82",
+  "chicken-recipes": "https://images.unsplash.com/photo-1532550907401-a500c9a57435?auto=format&fit=crop&w=900&q=82",
+  "breakfast-recipes": "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=900&q=82",
+  "lunch-recipes": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=82",
+  "pasta-recipes": "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=900&q=82",
+  "healthy-recipes": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=82",
+  "slow-cooker-recipes": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=82",
+  "soups-stews": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=82",
+  "salad-recipes": "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=82",
+  "appetizers-snacks": "https://images.unsplash.com/photo-1541014741259-de529411b96a?auto=format&fit=crop&w=900&q=82",
   "weeknight-dinners": "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=900&q=82",
   "one-pot-meals": "https://images.unsplash.com/photo-1476124369491-e7da6fcca9a8?auto=format&fit=crop&w=900&q=82",
   "air-fryer": "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=900&q=82",
@@ -15,8 +25,8 @@ const categoryImages: Record<string, string> = {
 };
 
 export const metadata: Metadata = {
-  title: "Recipe Categories | Easy Dinner, Air Fryer, One-Pot & Baking Ideas",
-  description: "Explore recipe collections by meal type and cooking style, including easy weeknight dinners, one-pot meals, air fryer favorites, budget-friendly recipes, and homemade desserts.",
+  title: "Browse Easy Recipe Categories | Dinner, Chicken, Breakfast & More",
+  description: "Find your next meal with easy recipe collections for chicken, dinner, breakfast, pasta, healthy meals, air fryer cooking, soups, salads, and homemade desserts.",
   alternates: { canonical: "/categories" },
   openGraph: {
     title: "Browse Recipe Categories | Recipes by Maren",
