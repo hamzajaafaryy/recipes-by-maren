@@ -28,7 +28,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const category = await getCategory(slug);
   if (!category) return { title: "Category not found", robots: { index: false, follow: false } };
-  const description = category.description?.trim() || `Browse ${category.name.toLowerCase()} recipes from Recipes by Maren. Find approachable ideas for everyday home cooking.`;
+  const fullDescription = category.description?.trim() || `Browse ${category.name.toLowerCase()} recipes from Recipes by Maren. Find approachable ideas for everyday home cooking.`;
+  const description = fullDescription.length > 160 ? `${fullDescription.slice(0, 157).trimEnd()}...` : fullDescription;
   const recipes = category.recipes.map(({ recipe }) => recipe);
   const firstImage = recipes.find((recipe) => recipe.heroPublicId)?.heroPublicId;
   const image = getOpenGraphImageUrl(firstImage);
