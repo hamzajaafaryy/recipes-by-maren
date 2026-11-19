@@ -147,7 +147,7 @@ export default async function HomePage() {
           <div className="maren-feature-photo">
             {getRecipeImageUrl(featured.heroPublicId, 1200) ? <Image src={getRecipeImageUrl(featured.heroPublicId, 1200)!} alt={featured.title} fill unoptimized sizes="(max-width: 800px) 100vw, 50vw" /> : null}
           </div>
-          <div className="maren-feature-copy"><span className="maren-eyebrow"><span /> EDITOR'S PICK</span><h2>{featured.title}</h2><p>{featured.excerpt}</p><Link className="maren-solid-link" href={`/recipes/${featured.slug}`}>Make this recipe <span>→</span></Link></div>
+          <div className="maren-feature-copy"><span className="maren-eyebrow"><span /> EDITOR&apos;S PICK</span><h2>{featured.title}</h2><p>{featured.excerpt}</p><Link className="maren-solid-link" href={`/recipes/${featured.slug}`}>Make this recipe <span>→</span></Link></div>
         </section>
       ) : null}
 
