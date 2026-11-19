@@ -22,12 +22,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }),
       prisma.category.findMany({
         where: { recipes: { some: { recipe: { status: "PUBLISHED", publishedAt: { not: null } } } } },
-        select: { slug: true, updatedAt: true }
+        select: { slug: true, updatedAt: true, _count: { select: { recipes: { where: { recipe: { status: "PUBLISHED", publishedAt: { not: null } } } } } } }
       })
     ]);
     latestRecipeDate = latest?.updatedAt;
     recipes = recipeRows;
-    categories = categoryRows;
+    categories = categoryRows.filter((category) => category._count.recipes >= 3);
   } catch {
     // Keep a valid static sitemap while the database is not configured.
   }
