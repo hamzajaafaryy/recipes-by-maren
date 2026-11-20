@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
     const status = body.status === "PUBLISHED" ? "PUBLISHED" : "DRAFT";
     const ingredients: IngredientInput[] = Array.isArray(body.ingredients) ? body.ingredients.filter(isIngredient).slice(0, 100) : [];
     const instructions: InstructionInput[] = Array.isArray(body.instructions) ? body.instructions.filter(isInstruction).slice(0, 50) : [];
-    const categoryIds = Array.isArray(body.categoryIds) ? [...new Set(body.categoryIds.filter((x: unknown) => typeof x === "string"))].slice(0, 30) : [];
+    const categoryIds: string[] = Array.isArray(body.categoryIds) ? Array.from(new Set(body.categoryIds.filter((x: unknown): x is string => typeof x === "string"))).slice(0, 30) : [];
     if (!title || title.length > 140) return NextResponse.json({ error: "Title is required (maximum 140 characters)." }, { status: 400 });
     if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug.length > 160) return NextResponse.json({ error: "Use a valid lowercase URL slug." }, { status: 400 });
     if (!excerpt || excerpt.length > 320) return NextResponse.json({ error: "A short description is required (maximum 320 characters)." }, { status: 400 });
