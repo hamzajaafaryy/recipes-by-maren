@@ -48,7 +48,8 @@ async function getHomeContent() {
       })
     ]);
     return { categories, recipes };
-  } catch {
+  } catch (error) {
+    console.error("[home] Failed to load homepage content:", error);
     return { categories: [], recipes: [] };
   }
 }
