@@ -21,3 +21,5 @@ ALTER TABLE "Recipe"
 UPDATE "Recipe"
 SET "introduction" = NULLIF("content", '')
 WHERE "introduction" IS NULL AND "content" <> '';
+
+ALTER TABLE "Instruction" ADD COLUMN "imageAltText" TEXT;
