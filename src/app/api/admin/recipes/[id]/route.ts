@@ -32,7 +32,8 @@ const editorSchema = z.object({
   instructions: z.array(z.object({
     title: z.string().max(180).optional(),
     body: z.string().trim().min(1).max(5000),
-    imagePublicId: z.string().max(300).optional()
+    imagePublicId: z.string().max(300).optional(),
+    imageAltText: z.string().max(300).optional()
   })).max(50),
   expertTips: textList,
   variations: textList,
