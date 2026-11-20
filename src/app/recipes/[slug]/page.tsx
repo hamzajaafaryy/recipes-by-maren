@@ -143,14 +143,15 @@ export default async function RecipePage({ params }: Props) {
           {equipment.length ? <section id="equipment"><h2>Equipment Needed</h2><ul className="rich-bullet-list">{equipment.map((item, i) => <li key={i}>{itemText(item)}</li>)}</ul></section> : null}
 
           <section id="instructions"><h2>How to Make It</h2>
-            {recipe.instructions.length ? <ol className="instruction-list">{recipe.instructions.map((step, index) =>
-              <li key={step.id}>
+            {recipe.instructions.length ? <ol className="instruction-list">{recipe.instructions.map((step, index) => {
+              const stepImage = getRecipeImageUrl(step.imagePublicId, 1000);
+              return <li key={step.id}>
                 <span className="instruction-number">{index + 1}</span>
                 <div>{step.title ? <h3>{step.title}</h3> : null}<p>{step.body}</p>
-                  {step.imagePublicId ? <div className="recipe-step-image-note">Step photo available in the recipe media library.</div> : null}
+                  {stepImage ? <Image className="recipe-step-image" src={stepImage} alt={step.title || `${recipe.title}, step ${index + 1}`} width={1000} height={650} unoptimized /> : null}
                 </div>
-              </li>
-            )}</ol> : <p>Step-by-step instructions are being added.</p>}
+              </li>;
+            })}</ol> : <p>Step-by-step instructions are being added.</p>}
           </section>
 
           {expertTips.length ? <section id="expert-tips"><h2>Tips for the Best Results</h2><ul className="rich-bullet-list">{expertTips.map((item, i) => <li key={i}>{itemTitle(item) ? <strong>{itemTitle(item)} </strong> : null}{itemText(item)}</li>)}</ul></section> : null}
