@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
 type Category = { id: string; name: string };
+type IngredientInput = { quantity: string; item: string; section: string };
+type InstructionInput = { title: string; body: string; imagePublicId: string; imageAltText: string };
 type JsonEntry = string | { title?: string; text?: string; answer?: string; question?: string; name?: string; body?: string; description?: string };
 type RecipeData = {
   title: string; slug: string; excerpt: string; servings: number; status: string;
@@ -42,6 +44,8 @@ export default function RecipeEditor() {
   const id = params.id;
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [ingredientRows, setIngredientRows] = useState<IngredientInput[]>([{ quantity: "", item: "", section: "" }]);
+  const [instructionRows, setInstructionRows] = useState<InstructionInput[]>([{ title: "", body: "", imagePublicId: "", imageAltText: "" }]);
   const [form, setForm] = useState<Record<string, string | number>>({
     title: "", slug: "", excerpt: "", introduction: "", whyLove: "", ingredientNotes: "",
     equipment: "", ingredients: "", instructions: "", expertTips: "", variations: "",
@@ -68,14 +72,14 @@ export default function RecipeEditor() {
       const r: RecipeData = data.recipe;
       setCategories(data.categories || []);
       setSelectedCategories(r.categories.map((x) => x.categoryId));
+      setIngredientRows(r.ingredients.length ? r.ingredients.map((x) => ({ quantity: x.quantity || "", item: x.item, section: x.section || "" })) : [{ quantity: "", item: "", section: "" }]);
+      setInstructionRows(r.instructions.length ? r.instructions.map((x) => ({ title: x.title || "", body: x.body, imagePublicId: x.imagePublicId || "", imageAltText: x.imageAltText || "" })) : [{ title: "", body: "", imagePublicId: "", imageAltText: "" }]);
       setStatus(r.status);
       setForm({
         title: r.title || "", slug: r.slug || "", excerpt: r.excerpt || "",
         introduction: r.introduction || r.content || "",
         whyLove: lines(r.whyLove).join("\n"), ingredientNotes: lines(r.ingredientNotes).join("\n"),
         equipment: lines(r.equipment).join("\n"),
-        ingredients: r.ingredients.map((x) => [x.quantity || "", x.item, x.section || ""].join(" | ")).join("\n"),
-        instructions: r.instructions.map((x) => [x.title || "", x.body, x.imagePublicId || "", x.imageAltText || ""].join(" | ")).join("\n"),
         expertTips: lines(r.expertTips).join("\n"), variations: lines(r.variations).join("\n"),
         storageReheating: r.storageReheating || "", servingSuggestions: lines(r.servingSuggestions).join("\n"),
         faqs: Array.isArray(r.faqs) ? r.faqs.map((x) => [x.question, x.answer].join(" || ")).join("\n") : "",
@@ -93,13 +97,13 @@ export default function RecipeEditor() {
   }, [id]);
 
   function payload(nextStatus: string) {
-    const ingredients = parsePairs(String(form.ingredients ?? ""), "|").map((x) => ({
-      quantity: x.first, item: x.second.split("|")[0]?.trim() || "", section: x.second.split("|")[1]?.trim() || undefined
-    })).filter((x) => x.item);
-    const instructions = parsePairs(String(form.instructions ?? ""), "|").map((x) => {
-      const parts = x.second.split("|");
-      return { title: x.first || undefined, body: parts[0]?.trim() || "", imagePublicId: parts[1]?.trim() || undefined, imageAltText: parts[2]?.trim() || undefined };
-    }).filter((x) => x.body);
+    const ingredients = ingredientRows.filter((item) => item.item.trim()).map((item) => ({
+      quantity: item.quantity.trim(), item: item.item.trim(), section: item.section.trim() || undefined
+    }));
+    const instructions = instructionRows.filter((step) => step.body.trim()).map((step) => ({
+      title: step.title.trim() || undefined, body: step.body.trim(),
+      imagePublicId: step.imagePublicId.trim() || undefined, imageAltText: step.imageAltText.trim() || undefined
+    }));
     const faqs = parsePairs(String(form.faqs ?? ""), "||").map((x) => ({ question: x.first, answer: x.second })).filter((x) => x.question && x.answer);
     return {
       title: String(form.title ?? ""), slug: String(form.slug ?? ""), excerpt: String(form.excerpt ?? ""), introduction: String(form.introduction ?? ""),
@@ -169,9 +173,26 @@ export default function RecipeEditor() {
 
           <section className="admin-editor-panel">
             <div className="admin-editor-section-head"><span>02</span><div><h2>Ingredients & method</h2><p>Structured data for the recipe card and step-by-step guide.</p></div></div>
-            <div className="editor-grid">
-              {area("Ingredients", "ingredients", "1/2 cup | honey | Sauce\n2 | salmon fillets | Main", "One ingredient per line: quantity | ingredient | optional group name.")}
-              {area("Step-by-step instructions", "instructions", "Prepare the sauce | Whisk honey, garlic, and soy sauce. | step-image-public-id\nCook the salmon | Air fry until cooked through.", "One step per line: optional title | full instruction | optional Cloudinary public ID | descriptive image alt text.")}
+            <div className="editor-repeater-block">
+              <div className="editor-repeater-heading"><div><h3>Ingredients</h3><p>Add each ingredient separately and group it when useful.</p></div><button type="button" onClick={() => setIngredientRows((rows) => [...rows, { quantity: "", item: "", section: "" }])}>+ Add ingredient</button></div>
+              {ingredientRows.map((item, index) => <div className="editor-repeater-row ingredient-row" key={index}>
+                <label><span>Quantity</span><input value={item.quantity} onChange={(e) => setIngredientRows((rows) => rows.map((row, i) => i === index ? { ...row, quantity: e.target.value } : row))} placeholder="1/2 cup" /></label>
+                <label><span>Ingredient</span><input value={item.item} onChange={(e) => setIngredientRows((rows) => rows.map((row, i) => i === index ? { ...row, item: e.target.value } : row))} placeholder="Honey" /></label>
+                <label><span>Group (optional)</span><input value={item.section} onChange={(e) => setIngredientRows((rows) => rows.map((row, i) => i === index ? { ...row, section: e.target.value } : row))} placeholder="Sauce" /></label>
+                <button type="button" className="editor-remove-row" aria-label={`Remove ingredient ${index + 1}`} onClick={() => setIngredientRows((rows) => rows.filter((_, i) => i !== index))}>Remove</button>
+              </div>)}
+            </div>
+            <div className="editor-repeater-block">
+              <div className="editor-repeater-heading"><div><h3>Step-by-step instructions</h3><p>Give every step a clear action. Add a photo and descriptive alt text when available.</p></div><button type="button" onClick={() => setInstructionRows((rows) => [...rows, { title: "", body: "", imagePublicId: "", imageAltText: "" }])}>+ Add step</button></div>
+              {instructionRows.map((step, index) => <div className="editor-step-card" key={index}>
+                <div className="editor-step-card-top"><strong>Step {index + 1}</strong><button type="button" className="editor-remove-row" onClick={() => setInstructionRows((rows) => rows.filter((_, i) => i !== index))}>Remove step</button></div>
+                <label className="editor-field"><span>Step title (optional)</span><input value={step.title} onChange={(e) => setInstructionRows((rows) => rows.map((row, i) => i === index ? { ...row, title: e.target.value } : row))} placeholder="Prepare the sauce" /></label>
+                <label className="editor-field"><span>Instruction</span><textarea rows={3} value={step.body} onChange={(e) => setInstructionRows((rows) => rows.map((row, i) => i === index ? { ...row, body: e.target.value } : row))} placeholder="Describe exactly what to do and what to look for…" /></label>
+                <div className="editor-grid">
+                  <label className="editor-field"><span>Step image Cloudinary public ID</span><input value={step.imagePublicId} onChange={(e) => setInstructionRows((rows) => rows.map((row, i) => i === index ? { ...row, imagePublicId: e.target.value } : row))} placeholder="recipes/salmon/step-1" /></label>
+                  <label className="editor-field"><span>Step image alt text</span><input value={step.imageAltText} onChange={(e) => setInstructionRows((rows) => rows.map((row, i) => i === index ? { ...row, imageAltText: e.target.value } : row))} placeholder="Whisking honey garlic sauce in a bowl" /></label>
+                </div>
+              </div>)}
             </div>
           </section>
 
@@ -228,8 +249,8 @@ export default function RecipeEditor() {
         <aside className="admin-editor-rail">
           <div className="admin-editor-panel editor-checklist"><span className="eyebrow">Editorial checklist</span><h3>Before publishing</h3>
             <p><strong>{wordCount}</strong> intro words</p>
-            <p><strong>{parseTextList(String(form.ingredients ?? "")).length}</strong> ingredient lines</p>
-            <p><strong>{parseTextList(String(form.instructions ?? "")).length}</strong> instruction steps</p>
+            <p><strong>{ingredientRows.filter((item) => item.item.trim()).length}</strong> ingredient lines</p>
+            <p><strong>{instructionRows.filter((step) => step.body.trim()).length}</strong> instruction steps</p>
             <p><strong>{selectedCategories.length}</strong> categories selected</p>
             <small>Confirm measurements, method, doneness, storage guidance, and all images before publishing.</small>
           </div>
