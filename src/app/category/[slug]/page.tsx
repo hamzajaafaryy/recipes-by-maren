@@ -9,19 +9,16 @@ import { getOpenGraphImageUrl, getRecipeImageUrl } from "@/lib/recipe-media";
 type Props = { params: Promise<{ slug: string }> };
 
 async function getCategory(slug: string) {
-  try {
-    return await prisma.category.findUnique({
-      where: { slug },
-      include: {
-        recipes: {
-          where: { recipe: { status: "PUBLISHED", publishedAt: { not: null } } },
-          include: { recipe: { select: { id: true, title: true, slug: true, excerpt: true, heroPublicId: true, totalMinutes: true, publishedAt: true } } }
-        }
+  // Do not turn database outages/schema errors into misleading 404 responses.
+  return prisma.category.findUnique({
+    where: { slug },
+    include: {
+      recipes: {
+        where: { recipe: { status: "PUBLISHED", publishedAt: { not: null } } },
+        include: { recipe: { select: { id: true, title: true, slug: true, excerpt: true, heroPublicId: true, totalMinutes: true, publishedAt: true } } }
       }
-    });
-  } catch {
-    return null;
-  }
+    }
+  });
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
