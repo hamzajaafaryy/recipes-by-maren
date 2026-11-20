@@ -10,7 +10,6 @@ export default function AdminDashboard() {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [excerpt, setExcerpt] = useState("");
-  const [status, setStatus] = useState("DRAFT");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [recipes, setRecipes] = useState<RecipeRow[]>([]);
