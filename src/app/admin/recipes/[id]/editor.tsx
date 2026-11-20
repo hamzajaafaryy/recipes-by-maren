@@ -140,7 +140,7 @@ export default function RecipeEditor() {
 
   if (!loaded) return <main className="admin-editor-shell"><p>Loading recipe editor…</p></main>;
 
-  const field = (label: string, key: string, placeholder = "", type = "text") => (
+  const field = (label: string, key: string, placeholder = "", type: "text" | "number" | "url" = "text") => (
     <label className="editor-field"><span>{label}</span><input type={type} value={form[key] ?? ""} onChange={(e) => set(key, e.target.value)} placeholder={placeholder} /></label>
   );
   const area = (label: string, key: string, placeholder: string, hint: string) => (
