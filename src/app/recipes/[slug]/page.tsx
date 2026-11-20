@@ -19,7 +19,7 @@ function textItems(value: unknown): TextItem[] {
 }
 function itemText(item: TextItem): string {
   if (typeof item === "string") return item;
-  return item.text || item.body || item.description || item.name || item.title || "";
+  return item.text || item.body || item.description || item.name || item.title || item.answer || "";
 }
 function itemTitle(item: TextItem): string {
   return typeof item === "string" ? "" : item.title || item.name || item.question || "";
