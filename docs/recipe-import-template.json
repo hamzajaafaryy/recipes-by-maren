@@ -1,0 +1,76 @@
+{
+  "title": "Air Fryer Honey Garlic Salmon",
+  "slug": "air-fryer-honey-garlic-salmon",
+  "excerpt": "Tender salmon coated in a sweet-savory honey garlic glaze. Add an accurate description of the finished recipe.",
+  "introduction": "Write the recipe introduction here. Only include details supplied by the recipe developer.",
+  "whyLove": [
+    "A clear, specific reason this recipe is useful."
+  ],
+  "ingredientNotes": [
+    {
+      "title": "Salmon",
+      "text": "Explain the ingredient choice only when supported by the developer's notes."
+    }
+  ],
+  "equipment": [
+    "Air fryer"
+  ],
+  "ingredients": [
+    {
+      "section": "Salmon",
+      "quantity": "4 (6-ounce)",
+      "item": "salmon fillets"
+    }
+  ],
+  "instructions": [
+    {
+      "title": "Prepare the glaze",
+      "body": "Add the verified method here. Do not invent temperatures or timings."
+    }
+  ],
+  "expertTips": [
+    "Add a verified practical tip."
+  ],
+  "variations": [
+    "Add a variation only when provided or confirmed."
+  ],
+  "storageReheating": "Add verified storage and reheating guidance, or leave this field out.",
+  "servingSuggestions": [
+    "Add a serving suggestion."
+  ],
+  "faqs": [
+    {
+      "question": "Can I prepare this ahead?",
+      "answer": "Use only an answer supported by the recipe developer."
+    }
+  ],
+  "authorNotes": "Optional genuine note from the recipe developer. Do not invent personal experience.",
+  "prepMinutes": 10,
+  "cookMinutes": 8,
+  "totalMinutes": 18,
+  "servings": 4,
+  "difficulty": "Easy",
+  "recipeTemperature": "Use the verified temperature here",
+  "recipeYield": "4 servings",
+  "heroAltText": "Finished salmon fillets with honey garlic glaze on a serving plate",
+  "seoTitle": "Air Fryer Honey Garlic Salmon",
+  "seoDescription": "A clear, accurate search description within 320 characters.",
+  "seoFocusKeyword": "air fryer honey garlic salmon",
+  "seoKeywords": [
+    "honey garlic salmon",
+    "easy air fryer salmon"
+  ],
+  "relatedRecipeSlugs": [],
+  "categories": [
+    "Seafood"
+  ],
+  "images": [
+    {
+      "filename": "salmon-finished.jpg",
+      "alt": "Cooked honey garlic salmon fillets on a plate",
+      "caption": "Optional short caption",
+      "placement": "hero",
+      "copyright": "© Recipes by Maren"
+    }
+  ]
+}
