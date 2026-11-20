@@ -14,6 +14,9 @@ export default function AdminDashboard() {
   const [busy, setBusy] = useState(false);
   const [recipes, setRecipes] = useState<RecipeRow[]>([]);
   const [loadError, setLoadError] = useState("");
+  const [importFile, setImportFile] = useState<File | null>(null);
+  const [importMessage, setImportMessage] = useState("");
+  const [importBusy, setImportBusy] = useState(false);
   const router = useRouter();
 
   async function loadRecipes() {
@@ -56,7 +59,7 @@ export default function AdminDashboard() {
     }
   }
 
-  async function logout() {
+  async function importRecipe(event: React.FormEvent<HTMLFormElement>) {\n    event.preventDefault();\n    if (!importFile) { setImportMessage("Choose a recipe JSON file first."); return; }\n    setImportBusy(true); setImportMessage("");\n    try {\n      const raw = await importFile.text();\n      const payload = JSON.parse(raw);\n      const response = await fetch("/api/admin/recipes/import", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });\n      const data = await response.json();\n      if (!response.ok) throw new Error(data.error || "Could not import this file.");\n      const warnings = data.missingCategories?.length ? " Missing categories: " + data.missingCategories.join(", ") + "." : "";\n      setImportMessage("Imported as draft. " + (data.imageManifest?.length || 0) + " image references found." + warnings + " Opening editor…");\n      router.push(`/admin/recipes/${data.recipe.id}`); router.refresh();\n    } catch (error) { setImportMessage(error instanceof SyntaxError ? "This file is not valid JSON." : error instanceof Error ? error.message : "Import failed."); }\n    finally { setImportBusy(false); }\n  }\n\n  async function logout() {
     await fetch("/api/admin/logout", { method: "POST" });
     router.replace("/admin/login");
     router.refresh();
@@ -97,7 +100,7 @@ export default function AdminDashboard() {
             {message && <p className="admin-message" role="status">{message}</p>}
           </form>
         </section>
-        <section className="admin-panel recipe-library" id="recipe-library">
+        <section className="admin-panel" id="json-import">\n          <div className="admin-panel-heading"><div><span className="eyebrow">Fast publishing workflow</span><h2>Import a recipe from JSON</h2></div><span className="draft-pill">DRAFT ONLY</span></div>\n          <p className="admin-intro">Upload the structured JSON prepared for Recipes by Maren. We validate the fields and create a draft so you can review every detail before publishing.</p>\n          <form className="admin-form" onSubmit={importRecipe}>\n            <label htmlFor="recipe-json-file">Recipe JSON file</label>\n            <input id="recipe-json-file" type="file" accept=".json,application/json" onChange={(event) => setImportFile(event.target.files?.[0] || null)} />\n            <button className="button-primary" type="submit" disabled={importBusy || !importFile}>{importBusy ? "Importing…" : "Validate & import draft"}</button>\n            {importMessage && <p className="admin-message" role="status">{importMessage}</p>}\n          </form>\n          <p className="admin-footnote">Photo files are not uploaded by this JSON import yet. Add the original hero and step photos in the editor; image references in the JSON are returned for review.</p>\n        </section>\n        <section className="admin-panel recipe-library" id="recipe-library">
           <div className="admin-panel-heading"><div><span className="eyebrow">Your content</span><h2>Recipe library</h2></div><span className="draft-pill">{recipes.length} TOTAL</span></div>
           {loadError && <p className="form-error">{loadError}</p>}
           {!loadError && recipes.length === 0 && <p className="admin-empty">No recipes yet. Create your first entry above.</p>}
