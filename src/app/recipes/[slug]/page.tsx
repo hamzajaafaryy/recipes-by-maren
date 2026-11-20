@@ -6,6 +6,7 @@ export const revalidate = 3600;
 import { notFound } from "next/navigation";
 import RecipeJsonLd from "@/components/recipe-json-ld";
 import PinterestSaveButton from "@/components/pinterest-save-button";
+import RecipeCard from "@/components/recipe-card";
 import { prisma } from "@/lib/prisma";
 import { getOpenGraphImageUrl, getPinterestImageUrl, getRecipeImageUrl } from "@/lib/recipe-media";
 
@@ -43,19 +44,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description,
     alternates: { canonical },
     openGraph: {
-      type: "article",
-      title,
-      description,
-      url: canonical,
+      type: "article", title, description, url: canonical,
       authors: [`${siteUrl}/about`],
       publishedTime: recipe.publishedAt?.toISOString(),
       modifiedTime: recipe.updatedAt.toISOString(),
       ...(image ? { images: [{ url: image, width: 1200, height: 630, alt: `${recipe.title} recipe` }] } : {})
     },
     twitter: {
-      card: image ? "summary_large_image" : "summary",
-      title,
-      description,
+      card: image ? "summary_large_image" : "summary", title, description,
       ...(image ? { images: [image] } : {})
     }
   };
@@ -75,8 +71,7 @@ export default async function RecipePage({ params }: Props) {
   const categoryNames = recipe.categories.map(({ category }) => category.name);
   const canUseRecipeSchema = Boolean(recipe.publishedAt && image && ingredientLines.length > 0 && instructionLines.length > 0);
   const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
+    "@context": "https://schema.org", "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
       { "@type": "ListItem", position: 2, name: "All Recipes", item: `${siteUrl}/recipes` },
@@ -86,90 +81,127 @@ export default async function RecipePage({ params }: Props) {
 
   return (
     <main className="content-page recipe-page" id="main-content" tabIndex={-1}>
-      <nav className="breadcrumbs" aria-label="Breadcrumb">
-        <Link href="/">Home</Link><span aria-hidden="true">/</span><Link href="/recipes">Recipes</Link><span aria-hidden="true">/</span><span>{recipe.title}</span>
-      </nav>
-      <header className="recipe-header">
-        <div className="recipe-kickers">
-          {recipe.categories.map(({ category }) => (
-            <Link className="recipe-category-link" href={`/category/${category.slug}`} key={category.slug}>{category.name}</Link>
-          ))}
+      <div className="recipe-page-inner">
+        <nav className="breadcrumbs" aria-label="Breadcrumb">
+          <Link href="/">Home</Link><span aria-hidden="true">/</span><Link href="/recipes">Recipes</Link><span aria-hidden="true">/</span><span>{recipe.title}</span>
+        </nav>
+
+        <header className="recipe-header">
+          <div className="recipe-kickers">
+            {recipe.categories.map(({ category }) => (
+              <Link className="recipe-category-link" href={`/category/${category.slug}`} key={category.slug}>{category.name}</Link>
+            ))}
+          </div>
+          <h1>{recipe.title}</h1>
+          <p className="recipe-excerpt">{recipe.excerpt}</p>
+          <p className="recipe-byline">
+            By {recipe.author.name}
+            {recipe.publishedAt ? <> · Published <time dateTime={recipe.publishedAt.toISOString()}>{recipe.publishedAt.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</time></> : null}
+          </p>
+          <div className="recipe-header-actions">
+            <a className="recipe-jump-button" href="#recipe-card">Jump to Recipe ↓</a>
+            <a className="recipe-outline-button" href="#recipe-card" onClick={() => {}}>Print Recipe</a>
+          </div>
+        </header>
+
+        {image ? (
+          <figure className="recipe-hero-figure">
+            <Image className="recipe-hero-image" src={image} alt={`${recipe.title} — finished dish`} width={1600} height={900} priority unoptimized />
+            {pinterestImage ? <PinterestSaveButton pageUrl={pageUrl} imageUrl={pinterestImage} description={`${recipe.title} — easy recipe from Recipes by Maren`} /> : null}
+          </figure>
+        ) : null}
+
+        <div className="recipe-layout">
+          <article className="recipe-content">
+            <section className="recipe-story" aria-labelledby="about-recipe-heading">
+              <span className="recipe-section-kicker">A LITTLE ABOUT THIS RECIPE</span>
+              <h2 id="about-recipe-heading">Let’s make {recipe.title.toLowerCase()}</h2>
+              <div className="recipe-intro">
+                {recipe.content ? recipe.content.split(/\n\s*\n/).map((paragraph, index) => <p key={index}>{paragraph}</p>) : <p>{recipe.excerpt}</p>}
+              </div>
+            </section>
+
+            <div className="recipe-quick-facts">
+              {recipe.prepMinutes !== null && <div><span>Prep time</span><strong>{recipe.prepMinutes} min</strong></div>}
+              {recipe.cookMinutes !== null && <div><span>Cook time</span><strong>{recipe.cookMinutes} min</strong></div>}
+              {recipe.totalMinutes !== null && <div><span>Total time</span><strong>{recipe.totalMinutes} min</strong></div>}
+              <div><span>Servings</span><strong>{recipe.servings}</strong></div>
+              {recipe.difficulty && <div><span>Difficulty</span><strong>{recipe.difficulty}</strong></div>}
+            </div>
+
+            <section className="recipe-method" aria-labelledby="method-heading">
+              <span className="recipe-section-kicker">STEP BY STEP</span>
+              <h2 id="method-heading">How to make {recipe.title.toLowerCase()}</h2>
+              <p className="recipe-section-lead">Follow these steps in order, and use the printable recipe card below to keep the ingredients and method handy while you cook.</p>
+              {recipe.instructions.length ? (
+                <ol className="instruction-list">
+                  {recipe.instructions.map((step, index) => (
+                    <li key={step.id}><span className="instruction-number">{index + 1}</span><div>{step.title ? <h3>{step.title}</h3> : null}<p>{step.body}</p></div></li>
+                  ))}
+                </ol>
+              ) : <p>Step-by-step instructions are being added.</p>}
+            </section>
+
+            <section className="recipe-ingredients-preview" aria-labelledby="ingredients-preview-heading">
+              <span className="recipe-section-kicker">WHAT YOU’LL NEED</span>
+              <h2 id="ingredients-preview-heading">Ingredients for this recipe</h2>
+              <p className="recipe-section-lead">Gather and measure everything before you begin. You can check items off and adjust the serving size in the recipe card.</p>
+              {recipe.ingredients.length ? (
+                <ul className="ingredient-list">
+                  {recipe.ingredients.map((item) => <li key={item.id}>{item.section ? <span className="ingredient-section-label">{item.section}: </span> : null}{item.quantity ? <strong>{item.quantity} </strong> : null}{item.item}</li>)}
+                </ul>
+              ) : <p>Ingredients for this recipe are being added.</p>}
+            </section>
+          </article>
+
+          <aside className="recipe-sidebar" aria-label="Recipe guide">
+            <div className="recipe-sidebar-card">
+              <span className="recipe-section-kicker">COOK WITH CONFIDENCE</span>
+              <h2>Your recipe at a glance</h2>
+              <p>Keep the timing and serving details close as you prepare this dish.</p>
+              {recipe.prepMinutes !== null && <div><span>Prep</span><strong>{recipe.prepMinutes} minutes</strong></div>}
+              {recipe.cookMinutes !== null && <div><span>Cook</span><strong>{recipe.cookMinutes} minutes</strong></div>}
+              {recipe.totalMinutes !== null && <div><span>Total</span><strong>{recipe.totalMinutes} minutes</strong></div>}
+              <div><span>Servings</span><strong>{recipe.servings}</strong></div>
+              {recipe.difficulty && <div><span>Difficulty</span><strong>{recipe.difficulty}</strong></div>}
+              <a href="#recipe-card">Go to printable recipe ↓</a>
+            </div>
+          </aside>
         </div>
-        <h1>{recipe.title}</h1>
-        <p className="recipe-excerpt">{recipe.excerpt}</p>
-        <p className="recipe-byline">
-          By {recipe.author.name}
-          {recipe.publishedAt ? <> · Published <time dateTime={recipe.publishedAt.toISOString()}>{recipe.publishedAt.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</time></> : null}
-        </p>
-      </header>
 
-      {image ? (
-        <figure className="recipe-hero-figure">
-          {/* unoptimized keeps Cloudinary's f_auto/q_auto transformations and avoids a second image proxy */}
-          <Image
-            className="recipe-hero-image"
-            src={image}
-            alt={`${recipe.title} — finished dish`}
-            width={1600}
-            height={900}
-            priority
-            unoptimized
+        <section className="recipe-card-section" aria-label="Printable recipe and sharing">
+          <div className="recipe-card-section-heading">
+            <span className="recipe-section-kicker">SAVE IT FOR LATER</span>
+            <h2>Make it, save it, share it.</h2>
+            <p>Print a kitchen-friendly copy or share this recipe with someone who would love it.</p>
+          </div>
+          <RecipeCard
+            title={recipe.title}
+            description={recipe.excerpt}
+            pageUrl={pageUrl}
+            imageUrl={pinterestImage}
+            prepMinutes={recipe.prepMinutes}
+            cookMinutes={recipe.cookMinutes}
+            totalMinutes={recipe.totalMinutes}
+            servings={recipe.servings}
+            difficulty={recipe.difficulty}
+            ingredients={recipe.ingredients.map(item => ({ id: item.id, section: item.section, quantity: item.quantity, item: item.item }))}
+            instructions={recipe.instructions.map(step => ({ id: step.id, title: step.title, body: step.body }))}
           />
-          {pinterestImage ? <PinterestSaveButton pageUrl={pageUrl} imageUrl={pinterestImage} description={`${recipe.title} — easy recipe from Recipes by Maren`} /> : null}
-        </figure>
-      ) : null}
+        </section>
 
-      <div className="recipe-layout">
-        <article className="recipe-content">
-          {recipe.content ? <div className="recipe-intro">{recipe.content}</div> : null}
-          <section aria-labelledby="ingredients-heading">
-            <h2 id="ingredients-heading">Ingredients</h2>
-            {recipe.ingredients.length ? (
-              <ul className="ingredient-list">
-                {recipe.ingredients.map((item) => <li key={item.id}>{item.quantity ? <strong>{item.quantity} </strong> : null}{item.item}</li>)}
-              </ul>
-            ) : <p>Ingredients for this recipe are being added.</p>}
-          </section>
-          <section aria-labelledby="instructions-heading">
-            <h2 id="instructions-heading">Instructions</h2>
-            {recipe.instructions.length ? (
-              <ol className="instruction-list">
-                {recipe.instructions.map((step, index) => (
-                  <li key={step.id}><span className="instruction-number">{index + 1}</span><div>{step.title ? <h3>{step.title}</h3> : null}<p>{step.body}</p></div></li>
-                ))}
-              </ol>
-            ) : <p>Step-by-step instructions are being added.</p>}
-          </section>
-        </article>
-        <aside className="recipe-facts" aria-label="Recipe details">
-          <h2>At a glance</h2>
-          {recipe.prepMinutes ? <p><span>Prep time</span><strong>{recipe.prepMinutes} min</strong></p> : null}
-          {recipe.cookMinutes ? <p><span>Cook time</span><strong>{recipe.cookMinutes} min</strong></p> : null}
-          {recipe.totalMinutes ? <p><span>Total time</span><strong>{recipe.totalMinutes} min</strong></p> : null}
-          <p><span>Servings</span><strong>{recipe.servings}</strong></p>
-          {recipe.difficulty ? <p><span>Difficulty</span><strong>{recipe.difficulty}</strong></p> : null}
-        </aside>
+        {canUseRecipeSchema ? (
+          <RecipeJsonLd
+            title={recipe.title} description={recipe.excerpt} imageUrls={[image!]}
+            datePublished={recipe.publishedAt!.toISOString()} dateModified={recipe.updatedAt.toISOString()}
+            authorName={recipe.author.name} recipeCategories={categoryNames} recipeUrl={pageUrl}
+            prepMinutes={recipe.prepMinutes ?? undefined} cookMinutes={recipe.cookMinutes ?? undefined}
+            totalMinutes={recipe.totalMinutes ?? undefined} servings={recipe.servings}
+            ingredients={ingredientLines} instructions={instructionLines}
+          />
+        ) : null}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, "\\u003c") }} />
       </div>
-
-      {canUseRecipeSchema ? (
-        <RecipeJsonLd
-          title={recipe.title}
-          description={recipe.excerpt}
-          imageUrls={[image!]}
-          datePublished={recipe.publishedAt!.toISOString()}
-          dateModified={recipe.updatedAt.toISOString()}
-          authorName={recipe.author.name}
-          recipeCategories={categoryNames}
-          recipeUrl={pageUrl}
-          prepMinutes={recipe.prepMinutes ?? undefined}
-          cookMinutes={recipe.cookMinutes ?? undefined}
-          totalMinutes={recipe.totalMinutes ?? undefined}
-          servings={recipe.servings}
-          ingredients={ingredientLines}
-          instructions={instructionLines}
-        />
-      ) : null}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, "\\u003c") }} />
     </main>
   );
 }
