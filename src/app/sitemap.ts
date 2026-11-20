@@ -28,8 +28,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     latestRecipeDate = latest?.updatedAt;
     recipes = recipeRows;
     categories = categoryRows;
-  } catch {
-    // Keep a valid static sitemap while the database is not configured.
+  } catch (error) {
+    // Keep a valid static sitemap during an outage, but make the failure visible in logs.
+    console.error("[sitemap] Failed to load dynamic URLs:", error);
   }
 
   const staticPages: MetadataRoute.Sitemap = [
