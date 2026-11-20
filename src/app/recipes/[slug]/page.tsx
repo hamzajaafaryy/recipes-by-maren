@@ -100,7 +100,7 @@ export default async function RecipePage({ params }: Props) {
           </p>
           <div className="recipe-header-actions">
             <a className="recipe-jump-button" href="#recipe-card">Jump to Recipe ↓</a>
-            <a className="recipe-outline-button" href="#recipe-card" onClick={() => {}}>View Recipe Card</a>
+            <a className="recipe-outline-button" href="#recipe-card">View Recipe Card</a>
           </div>
         </header>
 
