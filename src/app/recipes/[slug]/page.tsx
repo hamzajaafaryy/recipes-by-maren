@@ -67,7 +67,7 @@ export default async function RecipePage({ params }: Props) {
   const image = getRecipeImageUrl(recipe.heroPublicId, 1600);
   const pinterestImage = getPinterestImageUrl(recipe.heroPublicId);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://recipesbymaren.com";
-  const pageUrl = `${siteUrl}/recipes/${recipe.slug}`;
+  const pageUrl = recipe.canonicalUrl || `${siteUrl}/recipes/${recipe.slug}`;
   const ingredientLines = recipe.ingredients.map((item) => [item.quantity, item.item].filter(Boolean).join(" "));
   const instructionLines = recipe.instructions.map((step) => step.body);
   const categoryNames = recipe.categories.map(({ category }) => category.name);
