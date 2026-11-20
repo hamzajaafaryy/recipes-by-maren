@@ -5,13 +5,31 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 
 type Category = { id: string; name: string };
-type RecipeData = Record<string, any> & {
-  title: string; slug: string; excerpt: string; servings: number;
+type JsonEntry = string | { title?: string; text?: string; answer?: string; question?: string; name?: string; body?: string; description?: string };
+type RecipeData = {
+  title: string; slug: string; excerpt: string; servings: number; status: string;
+  content?: string | null; introduction?: string | null;
+  whyLove?: JsonEntry[] | null; ingredientNotes?: JsonEntry[] | null; equipment?: JsonEntry[] | null;
+  expertTips?: JsonEntry[] | null; variations?: JsonEntry[] | null; servingSuggestions?: JsonEntry[] | null;
+  faqs?: Array<{ question: string; answer: string }> | null;
+  storageReheating?: string | null; authorNotes?: string | null;
+  prepMinutes?: number | null; cookMinutes?: number | null; totalMinutes?: number | null;
+  difficulty?: string | null; recipeTemperature?: string | null; recipeYield?: string | null;
+  heroPublicId?: string | null; heroAltText?: string | null; seoTitle?: string | null;
+  seoDescription?: string | null; seoFocusKeyword?: string | null; seoKeywords?: string[] | null;
+  canonicalUrl?: string | null; relatedRecipeSlugs?: string[]; 
   ingredients: Array<{ quantity?: string | null; item: string; section?: string | null }>;
   instructions: Array<{ title?: string | null; body: string; imagePublicId?: string | null }>;
   categories: Array<{ categoryId: string }>;
 };
-const lines = (value: unknown): string[] => Array.isArray(value) ? value.map((item: any) => typeof item === "string" ? item : [item.title, item.text || item.answer].filter(Boolean).join(" | ")).filter(Boolean) : [];
+const lines = (value: unknown): string[] => Array.isArray(value) ? value.map((item: unknown) => {
+  if (typeof item === "string") return item;
+  if (item && typeof item === "object") {
+    const record = item as Record<string, unknown>;
+    return [record.title, record.text ?? record.answer ?? record.description].filter((part): part is string => typeof part === "string").join(" | ");
+  }
+  return "";
+}).filter(Boolean) : [];
 const parseTextList = (value: string) => value.split("\n").map((line) => line.trim()).filter(Boolean);
 const parsePairs = (value: string, separator: string) => parseTextList(value).map((line) => {
   const [first, ...rest] = line.split(separator);
@@ -24,7 +42,7 @@ export default function RecipeEditor() {
   const id = params.id;
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [form, setForm] = useState<Record<string, any>>({
+  const [form, setForm] = useState<Record<string, string | number>>({
     title: "", slug: "", excerpt: "", introduction: "", whyLove: "", ingredientNotes: "",
     equipment: "", ingredients: "", instructions: "", expertTips: "", variations: "",
     storageReheating: "", servingSuggestions: "", faqs: "", authorNotes: "",
@@ -38,7 +56,7 @@ export default function RecipeEditor() {
   const [busy, setBusy] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
-  const set = (key: string, value: any) => setForm((old) => ({ ...old, [key]: value }));
+  const set = (key: string, value: string | number) => setForm((old) => ({ ...old, [key]: value }));
   const wordCount = useMemo(() => String(form.introduction || "").trim().split(/\s+/).filter(Boolean).length, [form.introduction]);
 
   useEffect(() => {
@@ -60,7 +78,7 @@ export default function RecipeEditor() {
         instructions: r.instructions.map((x) => [x.title || "", x.body, x.imagePublicId || ""].join(" | ")).join("\n"),
         expertTips: lines(r.expertTips).join("\n"), variations: lines(r.variations).join("\n"),
         storageReheating: r.storageReheating || "", servingSuggestions: lines(r.servingSuggestions).join("\n"),
-        faqs: Array.isArray(r.faqs) ? r.faqs.map((x: any) => [x.question, x.answer].join(" || ")).join("\n") : "",
+        faqs: Array.isArray(r.faqs) ? r.faqs.map((x) => [x.question, x.answer].join(" || ")).join("\n") : "",
         authorNotes: r.authorNotes || "", prepMinutes: r.prepMinutes ?? "", cookMinutes: r.cookMinutes ?? "",
         totalMinutes: r.totalMinutes ?? "", servings: r.servings || 4, difficulty: r.difficulty || "",
         recipeTemperature: r.recipeTemperature || "", recipeYield: r.recipeYield || "",
@@ -75,31 +93,31 @@ export default function RecipeEditor() {
   }, [id]);
 
   function payload(nextStatus: string) {
-    const ingredients = parsePairs(form.ingredients, "|").map((x) => ({
+    const ingredients = parsePairs(String(form.ingredients ?? ""), "|").map((x) => ({
       quantity: x.first, item: x.second.split("|")[0]?.trim() || "", section: x.second.split("|")[1]?.trim() || undefined
     })).filter((x) => x.item);
-    const instructions = parsePairs(form.instructions, "|").map((x) => {
+    const instructions = parsePairs(String(form.instructions ?? ""), "|").map((x) => {
       const parts = x.second.split("|");
       return { title: x.first || undefined, body: parts[0]?.trim() || "", imagePublicId: parts[1]?.trim() || undefined };
     }).filter((x) => x.body);
-    const faqs = parsePairs(form.faqs, "||").map((x) => ({ question: x.first, answer: x.second })).filter((x) => x.question && x.answer);
+    const faqs = parsePairs(String(form.faqs ?? ""), "||").map((x) => ({ question: x.first, answer: x.second })).filter((x) => x.question && x.answer);
     return {
-      title: form.title, slug: form.slug, excerpt: form.excerpt, introduction: form.introduction,
-      whyLove: parseTextList(form.whyLove), ingredientNotes: parseTextList(form.ingredientNotes),
-      equipment: parseTextList(form.equipment), ingredients, instructions,
-      expertTips: parseTextList(form.expertTips), variations: parseTextList(form.variations),
-      storageReheating: form.storageReheating, servingSuggestions: parseTextList(form.servingSuggestions),
-      faqs, authorNotes: form.authorNotes,
+      title: String(form.title ?? ""), slug: String(form.slug ?? ""), excerpt: String(form.excerpt ?? ""), introduction: String(form.introduction ?? ""),
+      whyLove: parseTextList(String(form.whyLove ?? "")), ingredientNotes: parseTextList(String(form.ingredientNotes ?? "")),
+      equipment: parseTextList(String(form.equipment ?? "")), ingredients, instructions,
+      expertTips: parseTextList(String(form.expertTips ?? "")), variations: parseTextList(String(form.variations ?? "")),
+      storageReheating: String(form.storageReheating ?? ""), servingSuggestions: parseTextList(String(form.servingSuggestions ?? "")),
+      faqs, authorNotes: String(form.authorNotes ?? ""),
       prepMinutes: form.prepMinutes === "" ? null : Number(form.prepMinutes),
       cookMinutes: form.cookMinutes === "" ? null : Number(form.cookMinutes),
       totalMinutes: form.totalMinutes === "" ? null : Number(form.totalMinutes),
-      servings: Number(form.servings), difficulty: form.difficulty,
-      recipeTemperature: form.recipeTemperature, recipeYield: form.recipeYield,
-      heroPublicId: form.heroPublicId, heroAltText: form.heroAltText,
-      seoTitle: form.seoTitle, seoDescription: form.seoDescription,
-      seoFocusKeyword: form.seoFocusKeyword,
-      seoKeywords: parseTextList(form.seoKeywords.replace(/,/g, "\n")),
-      canonicalUrl: form.canonicalUrl, relatedRecipeSlugs: parseTextList(form.relatedRecipeSlugs),
+      servings: Number(form.servings), difficulty: String(form.difficulty ?? ""),
+      recipeTemperature: String(form.recipeTemperature ?? ""), recipeYield: String(form.recipeYield ?? ""),
+      heroPublicId: String(form.heroPublicId ?? ""), heroAltText: String(form.heroAltText ?? ""),
+      seoTitle: String(form.seoTitle ?? ""), seoDescription: String(form.seoDescription ?? ""),
+      seoFocusKeyword: String(form.seoFocusKeyword ?? ""),
+      seoKeywords: parseTextList(String(form.seoKeywords ?? "").replace(/,/g, "\n")),
+      canonicalUrl: String(form.canonicalUrl ?? ""), relatedRecipeSlugs: parseTextList(String(form.relatedRecipeSlugs ?? "")),
       categoryIds: selectedCategories, status: nextStatus
     };
   }
