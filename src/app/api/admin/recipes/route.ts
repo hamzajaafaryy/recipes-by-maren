@@ -3,6 +3,14 @@ import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
 
 export const runtime = "nodejs";
+type IngredientInput = { section?: unknown; quantity?: unknown; item: string };
+type InstructionInput = { title?: unknown; body: string };
+function isIngredient(value: unknown): value is IngredientInput {
+  return !!value && typeof value === "object" && "item" in value && typeof value.item === "string" && value.item.trim().length > 0;
+}
+function isInstruction(value: unknown): value is InstructionInput {
+  return !!value && typeof value === "object" && "body" in value && typeof value.body === "string" && value.body.trim().length > 0;
+}
 const recipeInclude = {
   ingredients: { orderBy: { sortOrder: "asc" as const } },
   instructions: { orderBy: { sortOrder: "asc" as const } },
@@ -27,8 +35,8 @@ export async function POST(request: NextRequest) {
     const slug = typeof body.slug === "string" ? body.slug.trim().toLowerCase() : "";
     const excerpt = typeof body.excerpt === "string" ? body.excerpt.trim() : "";
     const status = body.status === "PUBLISHED" ? "PUBLISHED" : "DRAFT";
-    const ingredients = Array.isArray(body.ingredients) ? body.ingredients.filter((x: any) => typeof x.item === "string" && x.item.trim()).slice(0, 100) : [];
-    const instructions = Array.isArray(body.instructions) ? body.instructions.filter((x: any) => typeof x.body === "string" && x.body.trim()).slice(0, 50) : [];
+    const ingredients: IngredientInput[] = Array.isArray(body.ingredients) ? body.ingredients.filter(isIngredient).slice(0, 100) : [];
+    const instructions: InstructionInput[] = Array.isArray(body.instructions) ? body.instructions.filter(isInstruction).slice(0, 50) : [];
     const categoryIds = Array.isArray(body.categoryIds) ? [...new Set(body.categoryIds.filter((x: unknown) => typeof x === "string"))].slice(0, 30) : [];
     if (!title || title.length > 140) return NextResponse.json({ error: "Title is required (maximum 140 characters)." }, { status: 400 });
     if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug.length > 160) return NextResponse.json({ error: "Use a valid lowercase URL slug." }, { status: 400 });
@@ -50,8 +58,8 @@ export async function POST(request: NextRequest) {
         seoTitle: typeof body.seoTitle === "string" ? body.seoTitle.slice(0, 180) : null,
         seoDescription: typeof body.seoDescription === "string" ? body.seoDescription.slice(0, 320) : null,
         canonicalUrl: typeof body.canonicalUrl === "string" ? body.canonicalUrl.slice(0, 500) : null,
-        ingredients: { create: ingredients.map((x: any, i: number) => ({ section: typeof x.section === "string" ? x.section.slice(0, 120) : null, quantity: typeof x.quantity === "string" ? x.quantity.slice(0, 120) : null, item: x.item.trim().slice(0, 240), sortOrder: i })) },
-        instructions: { create: instructions.map((x: any, i: number) => ({ title: typeof x.title === "string" ? x.title.slice(0, 160) : null, body: x.body.trim().slice(0, 5000), sortOrder: i })) },
+        ingredients: { create: ingredients.map((x, i) => ({ section: typeof x.section === "string" ? x.section.slice(0, 120) : null, quantity: typeof x.quantity === "string" ? x.quantity.slice(0, 120) : null, item: x.item.trim().slice(0, 240), sortOrder: i })) },
+        instructions: { create: instructions.map((x, i) => ({ title: typeof x.title === "string" ? x.title.slice(0, 160) : null, body: x.body.trim().slice(0, 5000), sortOrder: i })) },
         categories: { create: categoryIds.map((categoryId: string) => ({ category: { connect: { id: categoryId } } })) }
       },
       include: recipeInclude
