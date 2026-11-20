@@ -208,7 +208,7 @@ export default async function RecipePage({ params }: Props) {
         datePublished={recipe.publishedAt!.toISOString()} dateModified={recipe.updatedAt.toISOString()}
         authorName={recipe.author.name} recipeCategories={categoryNames} recipeUrl={pageUrl}
         prepMinutes={recipe.prepMinutes ?? undefined} cookMinutes={recipe.cookMinutes ?? undefined}
-        totalMinutes={recipe.totalMinutes ?? undefined} servings={recipe.servings}
+        totalMinutes={recipe.totalMinutes ?? undefined} servings={recipe.servings} recipeYield={recipe.recipeYield || undefined} keywords={recipe.seoKeywords}
         ingredients={ingredientLines} instructions={instructionLines}
       /> : null}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, "\\u003c") }} />
