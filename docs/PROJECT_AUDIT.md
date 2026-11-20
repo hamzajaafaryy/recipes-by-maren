@@ -98,3 +98,40 @@ The current repository is a visual starter and technical foundation, not a launc
 
 ## Publishing integrity
 Do not publish placeholder recipes or fabricate recipe testing, author credentials, ratings, reviews, nutrition values, or personal experience. A recipe should be published only after the actual ingredients, method, timings, yield, images, and editorial checks are complete.
+
+
+## Rich Recipe Experience — implementation branch (2026-11-20)
+
+Branch: `feature/rich-recipe-experience`
+
+### Implemented in source
+- Expanded the Prisma Recipe model with optional editorial fields: introduction, why-love points, ingredient notes, equipment, expert tips, variations, storage/reheating, serving suggestions, FAQs, author notes, recipe temperature/yield, hero alt text, SEO focus keyword/keywords, and related recipe slugs.
+- Added a PostgreSQL migration at `prisma/migrations/20261120160000_rich_recipe_content/migration.sql`. Existing article content is preserved; the migration copies legacy `content` into the new `introduction` field where applicable.
+- Added an authenticated recipe editor API at `/api/admin/recipes/[id]` with Zod validation, structured ingredient/instruction saving, category assignment, related recipe slugs, draft/publish status, and publish checks.
+- Added an authenticated editorial editor at `/admin/recipes/[id]` with grouped sections, SEO snippet preview, editorial checklist, responsive layout, and explicit Save Draft / Publish actions.
+- New recipe creation in the Content Studio now routes directly to the full editor; recipe library entries link to their editor.
+- Rebuilt the public recipe detail template with optional editorial sections, jump links, step images, a print-friendly recipe card, FAQ accordions, related recipe cards, improved mobile layout, and conditional section rendering.
+- Added a client-side Print Recipe action.
+- Extended Recipe JSON-LD with recipe yield and editorial keywords. No ratings or nutrition facts are fabricated or emitted by this change.
+
+### Required before using the editor in production
+1. Apply the new migration to the intended PostgreSQL database using the project's reviewed deployment process (for production, use `npx prisma migrate deploy` after verifying the database target).
+2. Regenerate Prisma Client with `npx prisma generate`.
+3. Verify the editor against the live database, including create/edit, category assignment, draft preview, publishing, and unpublishing.
+4. Complete Cloudinary upload integration. The current editor accepts Cloudinary public IDs; it does not yet upload files directly.
+5. Verify the preview deployment build and inspect desktop/mobile rendering before merging to main.
+6. Add validated nutrition entry only if reliable values and serving basis are available; otherwise leave nutrition absent.
+
+### Editorial and SEO rules
+- Optional sections are omitted from the public page when empty.
+- Existing recipe slugs and legacy content are preserved.
+- Publishing requires ingredients, instructions, and a hero image.
+- Recipe schema remains conditional on publication, a hero image, ingredients, and instructions.
+- Use verified temperatures, storage guidance, timings, and yield. Never generate placeholder claims, personal testing claims, ratings, or nutrition values.
+- Keep title, meta description, alt text, internal links, and structured data specific to the recipe. Word count is a quality signal, not a publishing requirement.
+
+### Verification status
+- Source changes are committed to the feature branch.
+- A Vercel preview deployment was requested for the feature branch; its build result still needs to be checked.
+- Database migration has not been applied or verified against the production database.
+- No live production changes have been made by this feature branch.
