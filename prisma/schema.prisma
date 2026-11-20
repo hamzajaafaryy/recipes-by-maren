@@ -94,6 +94,7 @@ model Instruction {
   title     String?
   body      String @db.Text
   imagePublicId String?
+  imageAltText  String?
   sortOrder Int    @default(0)
 
   @@index([recipeId, sortOrder])
