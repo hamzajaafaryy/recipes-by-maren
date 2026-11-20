@@ -27,7 +27,7 @@ export async function PUT(request: NextRequest, context: Context) {
     if (!excerpt || excerpt.length > 320) return NextResponse.json({ error: "A short description is required (maximum 320 characters)." }, { status: 400 });
     const ingredients: IngredientInput[] = Array.isArray(body.ingredients) ? body.ingredients.filter(isIngredient).slice(0, 100) : [];
     const instructions: InstructionInput[] = Array.isArray(body.instructions) ? body.instructions.filter(isInstruction).slice(0, 50) : [];
-    const categoryIds: string[] = Array.isArray(body.categoryIds) ? Array.from(new Set(body.categoryIds.filter((x: unknown): x is string => typeof x === "string"))).slice(0, 30) : [];
+    const categoryIds: string[] = Array.isArray(body.categoryIds) ? (body.categoryIds.filter((x: unknown) => typeof x === "string") as string[]).slice(0, 30) : [];
     if (status === "PUBLISHED") {
       if (ingredients.length === 0) return NextResponse.json({ error: "Add at least one ingredient before publishing." }, { status: 400 });
       if (instructions.length === 0) return NextResponse.json({ error: "Add at least one cooking instruction before publishing." }, { status: 400 });
