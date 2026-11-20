@@ -19,7 +19,7 @@ type RecipeData = {
   seoDescription?: string | null; seoFocusKeyword?: string | null; seoKeywords?: string[] | null;
   canonicalUrl?: string | null; relatedRecipeSlugs?: string[]; 
   ingredients: Array<{ quantity?: string | null; item: string; section?: string | null }>;
-  instructions: Array<{ title?: string | null; body: string; imagePublicId?: string | null }>;
+  instructions: Array<{ title?: string | null; body: string; imagePublicId?: string | null; imageAltText?: string | null }>;
   categories: Array<{ categoryId: string }>;
 };
 const lines = (value: unknown): string[] => Array.isArray(value) ? value.map((item: unknown) => {
@@ -75,7 +75,7 @@ export default function RecipeEditor() {
         whyLove: lines(r.whyLove).join("\n"), ingredientNotes: lines(r.ingredientNotes).join("\n"),
         equipment: lines(r.equipment).join("\n"),
         ingredients: r.ingredients.map((x) => [x.quantity || "", x.item, x.section || ""].join(" | ")).join("\n"),
-        instructions: r.instructions.map((x) => [x.title || "", x.body, x.imagePublicId || ""].join(" | ")).join("\n"),
+        instructions: r.instructions.map((x) => [x.title || "", x.body, x.imagePublicId || "", x.imageAltText || ""].join(" | ")).join("\n"),
         expertTips: lines(r.expertTips).join("\n"), variations: lines(r.variations).join("\n"),
         storageReheating: r.storageReheating || "", servingSuggestions: lines(r.servingSuggestions).join("\n"),
         faqs: Array.isArray(r.faqs) ? r.faqs.map((x) => [x.question, x.answer].join(" || ")).join("\n") : "",
@@ -98,7 +98,7 @@ export default function RecipeEditor() {
     })).filter((x) => x.item);
     const instructions = parsePairs(String(form.instructions ?? ""), "|").map((x) => {
       const parts = x.second.split("|");
-      return { title: x.first || undefined, body: parts[0]?.trim() || "", imagePublicId: parts[1]?.trim() || undefined };
+      return { title: x.first || undefined, body: parts[0]?.trim() || "", imagePublicId: parts[1]?.trim() || undefined, imageAltText: parts[2]?.trim() || undefined };
     }).filter((x) => x.body);
     const faqs = parsePairs(String(form.faqs ?? ""), "||").map((x) => ({ question: x.first, answer: x.second })).filter((x) => x.question && x.answer);
     return {
@@ -171,7 +171,7 @@ export default function RecipeEditor() {
             <div className="admin-editor-section-head"><span>02</span><div><h2>Ingredients & method</h2><p>Structured data for the recipe card and step-by-step guide.</p></div></div>
             <div className="editor-grid">
               {area("Ingredients", "ingredients", "1/2 cup | honey | Sauce\n2 | salmon fillets | Main", "One ingredient per line: quantity | ingredient | optional group name.")}
-              {area("Step-by-step instructions", "instructions", "Prepare the sauce | Whisk honey, garlic, and soy sauce. | step-image-public-id\nCook the salmon | Air fry until cooked through.", "One step per line: optional title | full instruction | optional Cloudinary image public ID.")}
+              {area("Step-by-step instructions", "instructions", "Prepare the sauce | Whisk honey, garlic, and soy sauce. | step-image-public-id\nCook the salmon | Air fry until cooked through.", "One step per line: optional title | full instruction | optional Cloudinary public ID | descriptive image alt text.")}
             </div>
           </section>
 
