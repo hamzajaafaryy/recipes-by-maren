@@ -24,10 +24,6 @@ function itemText(item: TextItem): string {
 function itemTitle(item: TextItem): string {
   return typeof item === "string" ? "" : item.title || item.name || item.question || "";
 }
-function minutes(value: number | null): string | undefined {
-  return value && value > 0 ? `PT${value}M` : undefined;
-}
-
 async function getRecipe(slug: string) {
   try {
     return await prisma.recipe.findFirst({
