@@ -25,17 +25,16 @@ function itemTitle(item: TextItem): string {
   return typeof item === "string" ? "" : item.title || item.name || item.question || "";
 }
 async function getRecipe(slug: string) {
-  try {
-    return await prisma.recipe.findFirst({
-      where: { slug, status: "PUBLISHED", publishedAt: { not: null } },
-      include: {
-        author: { select: { name: true } },
-        ingredients: { orderBy: { sortOrder: "asc" } },
-        instructions: { orderBy: { sortOrder: "asc" } },
-        categories: { include: { category: { select: { name: true, slug: true } } } }
-      }
-    });
-  } catch { return null; }
+  // Let database failures reach Next.js as server errors instead of disguising them as a missing recipe.
+  return prisma.recipe.findFirst({
+    where: { slug, status: "PUBLISHED", publishedAt: { not: null } },
+    include: {
+      author: { select: { name: true } },
+      ingredients: { orderBy: { sortOrder: "asc" } },
+      instructions: { orderBy: { sortOrder: "asc" } },
+      categories: { include: { category: { select: { name: true, slug: true } } } }
+    }
+  });
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
