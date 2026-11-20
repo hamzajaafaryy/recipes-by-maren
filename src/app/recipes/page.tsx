@@ -36,7 +36,9 @@ export default async function RecipesIndexPage() {
         select: { id: true, name: true, slug: true, _count: { select: { recipes: true } } }
       })
     ]);
-  } catch {}
+  } catch (error) {
+    console.error("[recipes-index] Failed to load recipes:", error);
+  }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://recipesbymaren.com";
   const schema = {
