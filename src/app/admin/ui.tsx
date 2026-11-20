@@ -59,7 +59,35 @@ export default function AdminDashboard() {
     }
   }
 
-  async function importRecipe(event: React.FormEvent<HTMLFormElement>) {\n    event.preventDefault();\n    if (!importFile) { setImportMessage("Choose a recipe JSON file first."); return; }\n    setImportBusy(true); setImportMessage("");\n    try {\n      const raw = await importFile.text();\n      const payload = JSON.parse(raw);\n      const response = await fetch("/api/admin/recipes/import", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });\n      const data = await response.json();\n      if (!response.ok) throw new Error(data.error || "Could not import this file.");\n      const warnings = data.missingCategories?.length ? " Missing categories: " + data.missingCategories.join(", ") + "." : "";\n      setImportMessage("Imported as draft. " + (data.imageManifest?.length || 0) + " image references found." + warnings + " Opening editor…");\n      router.push(`/admin/recipes/${data.recipe.id}`); router.refresh();\n    } catch (error) { setImportMessage(error instanceof SyntaxError ? "This file is not valid JSON." : error instanceof Error ? error.message : "Import failed."); }\n    finally { setImportBusy(false); }\n  }\n\n  async function logout() {
+  async function importRecipe(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!importFile) { setImportMessage("Choose a recipe JSON file first."); return; }
+    setImportBusy(true);
+    setImportMessage("");
+    try {
+      const raw = await importFile.text();
+      const payload = JSON.parse(raw);
+      const response = await fetch("/api/admin/recipes/import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Could not import this file.");
+      const warnings = data.missingCategories?.length
+        ? " Missing categories: " + data.missingCategories.join(", ") + "."
+        : "";
+      setImportMessage("Imported as draft. " + (data.imageManifest?.length || 0) + " image references found." + warnings + " Opening editor…");
+      router.push(`/admin/recipes/${data.recipe.id}`);
+      router.refresh();
+    } catch (error) {
+      setImportMessage(error instanceof SyntaxError ? "This file is not valid JSON." : error instanceof Error ? error.message : "Import failed.");
+    } finally {
+      setImportBusy(false);
+    }
+  }
+
+  async function logout() {
     await fetch("/api/admin/logout", { method: "POST" });
     router.replace("/admin/login");
     router.refresh();
