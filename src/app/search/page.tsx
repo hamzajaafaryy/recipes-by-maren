@@ -36,7 +36,8 @@ export default async function SearchPage({ searchParams }: Props) {
         take: 24,
         select: { id: true, title: true, slug: true, excerpt: true, heroPublicId: true, totalMinutes: true }
       });
-    } catch {
+    } catch (error) {
+      console.error("[recipe-search] Search query failed:", error);
       unavailable = true;
     }
   }
