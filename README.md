@@ -52,7 +52,7 @@ Replace `CHANGE_THIS_PASSWORD` with a strong unique password. Generate `AUTH_SEC
 openssl rand -base64 48
 ```
 
-Never commit real secrets to GitHub. New recipe entries are saved as drafts; the public recipe publishing workflow is intentionally not enabled until full recipe editing and review are implemented.
+Never commit real secrets to GitHub. The admin content studio supports recipe drafts, structured ingredients and instructions, category assignment, SEO metadata, hero-image upload, editing, deletion, and explicit publishing. Publishing requires at least one ingredient, one instruction, and a hero image. See `docs/ADMIN_CONTENT_STUDIO.md` for the workflow and Cloudinary setup. Scheduled publishing is not available yet.
 
 ## Database setup
 
