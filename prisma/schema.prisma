@@ -42,6 +42,23 @@ model Recipe {
   servings        Int      @default(4)
   difficulty      String?
   heroPublicId    String?
+  heroAltText     String?
+  introduction    String?  @db.Text
+  whyLove         Json?
+  ingredientNotes Json?
+  equipment       Json?
+  expertTips      Json?
+  variations      Json?
+  storageReheating String? @db.Text
+  servingSuggestions Json?
+  faqs            Json?
+  authorNotes     String?  @db.Text
+  recipeTemperature String?
+  recipeYield     String?
+  nutritionFacts  Json?
+  relatedRecipeSlugs String[] @default([])
+  seoFocusKeyword String?
+  seoKeywords     String[] @default([])
   seoTitle        String?
   seoDescription  String?  @db.VarChar(320)
   canonicalUrl    String?
@@ -77,6 +94,7 @@ model Instruction {
   title     String?
   body      String @db.Text
   imagePublicId String?
+  imageAltText  String?
   sortOrder Int    @default(0)
 
   @@index([recipeId, sortOrder])
