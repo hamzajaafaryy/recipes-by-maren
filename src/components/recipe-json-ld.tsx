@@ -11,6 +11,8 @@ type RecipeJsonLdProps = {
   cookMinutes?: number;
   totalMinutes?: number;
   servings?: number;
+  recipeYield?: string;
+  keywords?: string[];
   ingredients: string[];
   instructions: string[];
 };
