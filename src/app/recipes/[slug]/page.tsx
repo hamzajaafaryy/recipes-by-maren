@@ -144,7 +144,7 @@ export default async function RecipePage({ params }: Props) {
               return <li key={step.id}>
                 <span className="instruction-number">{index + 1}</span>
                 <div>{step.title ? <h3>{step.title}</h3> : null}<p>{step.body}</p>
-                  {stepImage ? <Image className="recipe-step-image" src={stepImage} alt={step.title || `${recipe.title}, step ${index + 1}`} width={1000} height={650} unoptimized /> : null}
+                  {stepImage ? <Image className="recipe-step-image" src={stepImage} alt={step.imageAltText || step.title || `${recipe.title}, step ${index + 1}`} width={1000} height={650} unoptimized /> : null}
                 </div>
               </li>;
             })}</ol> : <p>Step-by-step instructions are being added.</p>}
