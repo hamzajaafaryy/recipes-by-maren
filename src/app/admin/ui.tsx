@@ -43,7 +43,7 @@ export default function AdminDashboard() {
       const response = await fetch("/api/admin/recipes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, slug, excerpt, status })
+        body: JSON.stringify({ title, slug, excerpt })
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Could not create recipe.");
@@ -80,7 +80,7 @@ export default function AdminDashboard() {
         <div className="admin-stats">
           <div><span>RECIPES</span><strong>{recipes.length}</strong><small>Entries in your recipe library</small></div>
           <div><span>WORKFLOW</span><strong>Draft first</strong><small>Review every recipe before publishing</small></div>
-          <div><span>MEDIA</span><strong>Cloudinary ready</strong><small>Connect credentials to enable uploads</small></div>
+          <div><span>MEDIA</span><strong>Image setup needed</strong><small>Connect Cloudinary before adding recipe photos</small></div>
         </div>
         <section className="admin-panel" id="new-recipe">
           <div className="admin-panel-heading"><div><span className="eyebrow">Start writing</span><h2>Create a recipe</h2></div><span className="draft-pill">NEW ENTRY</span></div>
