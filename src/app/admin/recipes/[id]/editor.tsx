@@ -228,8 +228,8 @@ export default function RecipeEditor() {
         <aside className="admin-editor-rail">
           <div className="admin-editor-panel editor-checklist"><span className="eyebrow">Editorial checklist</span><h3>Before publishing</h3>
             <p><strong>{wordCount}</strong> intro words</p>
-            <p><strong>{parseTextList(form.ingredients).length}</strong> ingredient lines</p>
-            <p><strong>{parseTextList(form.instructions).length}</strong> instruction steps</p>
+            <p><strong>{parseTextList(String(form.ingredients ?? "")).length}</strong> ingredient lines</p>
+            <p><strong>{parseTextList(String(form.instructions ?? "")).length}</strong> instruction steps</p>
             <p><strong>{selectedCategories.length}</strong> categories selected</p>
             <small>Confirm measurements, method, doneness, storage guidance, and all images before publishing.</small>
           </div>
