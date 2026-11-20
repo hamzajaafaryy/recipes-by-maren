@@ -48,9 +48,7 @@ export default function AdminDashboard() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Could not create recipe.");
-      setTitle(""); setSlug(""); setExcerpt(""); setStatus("DRAFT");
-      setMessage("Recipe entry created successfully.");
-      await loadRecipes();
+      router.push(`/admin/recipes/${data.recipe.id}`);
       router.refresh();
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Something went wrong.");
@@ -104,7 +102,7 @@ export default function AdminDashboard() {
           <div className="admin-panel-heading"><div><span className="eyebrow">Your content</span><h2>Recipe library</h2></div><span className="draft-pill">{recipes.length} TOTAL</span></div>
           {loadError && <p className="form-error">{loadError}</p>}
           {!loadError && recipes.length === 0 && <p className="admin-empty">No recipes yet. Create your first entry above.</p>}
-          {recipes.length > 0 && <div className="recipe-table-wrap"><table className="recipe-table"><thead><tr><th>Recipe</th><th>Status</th><th>Updated</th></tr></thead><tbody>{recipes.map((recipe) => <tr key={recipe.id}><td><strong>{recipe.title}</strong><small>/{recipe.slug}</small></td><td><span className={recipe.status === "PUBLISHED" ? "table-status published" : "table-status"}>{recipe.status}</span></td><td>{new Date(recipe.updatedAt).toLocaleDateString("en-US")}</td></tr>)}</tbody></table></div>}
+          {recipes.length > 0 && <div className="recipe-table-wrap"><table className="recipe-table"><thead><tr><th>Recipe</th><th>Status</th><th>Updated</th><th>Editor</th></tr></thead><tbody>{recipes.map((recipe) => <tr key={recipe.id}><td><strong>{recipe.title}</strong><small>/{recipe.slug}</small></td><td><span className={recipe.status === "PUBLISHED" ? "table-status published" : "table-status"}>{recipe.status}</span></td><td>{new Date(recipe.updatedAt).toLocaleDateString("en-US")}</td><td><Link href={`/admin/recipes/${recipe.id}`} className="admin-edit-link">Edit recipe →</Link></td></tr>)}</tbody></table></div>}
         </section>
         <p className="admin-footnote">Before publishing, review ingredient quantities, method, images, nutrition details, and SEO information. Do not publish placeholder or untested recipe content.</p>
       </section>
